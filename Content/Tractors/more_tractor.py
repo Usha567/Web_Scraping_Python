@@ -1,6 +1,7 @@
 import time
 import urllib
 import os
+import re
 from urllib.parse import urlparse
 import xlsxwriter
 import pandas as pd
@@ -18,7 +19,7 @@ options.add_argument("--disable-popup-blocking")
 
 driver = webdriver.Chrome()
 
-driver.get('https://www.tractorjunction.com/powertrac-tractor/euro-439/')
+driver.get('https://www.tractorjunction.com/mahindra-tractor/475-di/')
 
 wait = WebDriverWait(driver, 15)
 # driver.execute_script('window.scrollTo(0, 500)')
@@ -107,38 +108,69 @@ try:
     model_list.append(model)
     print('title-', brand_list, model_list)
 
-    for j in range(3, 10):
-        # print('j-', j)
+    model_name=[]
+    model_name_ = driver.find_element(By.CSS_SELECTOR, 
+    "div.product-single-top>div.product-tooltip>h1").text
+    model_name.append(model_name_)
+
+    feature = driver.find_elements(By.CSS_SELECTOR, "div.product-single-features-inner")
+    feature_list =['','','']
+    feature_ans_list=['','','']
+
+    print('feature l-',len(feature))
+
+    for jj in range(3, len(feature)+2):
+        ele = driver.find_element(By.CSS_SELECTOR,
+            "div.product-single-features-inner:nth-child("+str(jj)+")>h5").text
+        feature_list.append(ele)
         element = driver.find_element(By.CSS_SELECTOR,
-            "div.product-single-features-inner:nth-child("+str(j)+")>p").text
-        # print('element-',element)     
-        if( j == 3):
-            # print('cylinder')
-            cylinder.append(element)
-            # hp_category.append(element) 
-        if( j == 4):
-            # print('hp_category')
-            hp_category.append(element) 
-            # pto_hp.append(element)
-        if( j ==5):
-            # print('pto_hp')
-            pto_hp.append(element)
-            # gear_box.append(element)
-        if( j == 6):
-            # print('gear_box')
-            # brakes.append(element)
-            gear_box.append(element)
-        if( j == 7):
-            # print('brakes')
-            brakes.append(element)
-            # warranty.append(element) 
-        if( j == 8):
-            # print('warranty')
-            warranty.append(element) 
-            # price.append(element)
-        if( j == 9):
-            # print('price')
-            price.append(element)
+                "div.product-single-features-inner:nth-child("+str(jj)+")>p").text
+        feature_ans_list.append(element)
+    print('feature_list-',feature_list) 
+    try:
+        if 'No. Of Cylinder'  in  feature_list:
+            index=feature_list.index('No. Of Cylinder')
+            cylinder.append(feature_ans_list[index]) 
+        else:
+            cylinder.append('')
+
+        if 'HP Category'  in  feature_list:
+            index=feature_list.index('HP Category')
+            hp_category.append(feature_ans_list[index])  
+        else:
+            hp_category.append('')
+
+        if 'PTO HP'  in  feature_list:
+            index=feature_list.index('PTO HP')
+            pto_hp.append(feature_ans_list[index])  
+        else:
+            pto_hp.append('') 
+
+        if 'Gear Box'  in  feature_list:
+            index=feature_list.index('Gear Box')
+            gear_box.append(feature_ans_list[index]) 
+        else:
+            gear_box.append('')
+
+        if 'Brakes'  in  feature_list:
+            index=feature_list.index('Brakes')
+            brakes.append(feature_ans_list[index]) 
+        else:
+            brakes.append('')   
+
+        if 'Warranty' in  feature_list:
+            index=feature_list.index('Warranty')
+            warranty.append(feature_ans_list[index])  
+        else:
+            warranty.append('')   
+
+        if 'Price' in  feature_list:
+            index=feature_list.index('Price')
+            price.append(feature_ans_list[index])  
+        else:
+            price.append('')
+    except NoSuchElementException as e:
+        print('no features..') 
 
     # fe_list=[]
     # for k in range(1, 6):
@@ -152,453 +184,419 @@ try:
     about=driver.find_element(By.CSS_SELECTOR, 'div.product_description_main').text
     about_list.append(about)
 
-    tab_ele =driver.find_elements(By.CSS_SELECTOR,"div.acc-container div.acc")
 
-    for l in range(2, 12):
-        # try:
-        print('l-', l)
-        print('text-', driver.find_element(By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(l)+")").text)
-        element = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(l)+")")))
+    tab_ele =driver.find_elements(By.CSS_SELECTOR,"div.acc-container div.acc")
+    tab_text_list=['','']   
+
+    print('tab_ele-', len(tab_ele)) 
+
+    for ii in range(2, len(tab_ele)+2):
+        print('i-', ii)
+        tab_text =  driver.find_element(By.CSS_SELECTOR,
+            "div.acc-container div.acc:nth-child("+str(ii)+")").text
+        tractor_model = model_name[0]+' ' 
+        print('tab_text-',tractor_model,  tab_text, re.split(tractor_model, tab_text))
+        t=re.split(tractor_model, tab_text)[1]
+        tab_text_list.append(t)
+
+    print('tab_text_list-', tab_text_list)
+
+    if 'Engine' in tab_text_list:
+        el_index = tab_text_list.index('Engine')
+        print('in-', el_index)
+        element = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,
+            "div.acc-container div.acc:nth-child("+str(el_index)+")")))
         element.click()
         time.sleep(.5)
-        ele= driver.find_element(By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(l)+")")     
+        ele= driver.find_element(By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")     
         tr=  ele.find_elements(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr")
 
-        if(l == 2):
-            print('tr-len', len(tr))
-            for ll in range(3,len(tr)+1):
-                try:
-                # if ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+")"):
-                    text1=   ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
-                    text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
-                    print('ll-', ll, text1)
-                    if(ll==3):
-                        if(text1=='Capacity CC'):
-                            engine_capaity.append(text)
-                    if(ll==4):
-                        if(text1=='Engine Rated RPM'):
-                            engine_rpm.append(text)
-                    if(ll==5):
-                        if(text1=='Cooling'):
-                            engine_cooling.append(text)
-                    if(ll==6):
-                        if(text1=='Air Filter'):
-                            engine_airfilter.append(text) 
-                    if(len(tr) == 8):
-                        if(ll==8):
-                            if(text1=='Fuel Pump'):
-                                print('f-')
-                                engine_fuelpump.append(text)
-                            else: 
-                                print('else f-')
-                                engine_fuelpump.append('')  
+        child_text_list =['','','']
+        chlid_ans_list=['','','']
+        for ll in range(1,(len(tr)+1)):
+            print('ll-', ll)
+            text1=ele.find_element(By.CSS_SELECTOR, 
+            "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
+            child_text_list.append(text1)
+            text = ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
+            chlid_ans_list.append(text)
+        print('engine child_text_list-', child_text_list,chlid_ans_list)
 
-                            if(text1=='Torque'):
-                                print('t-')
-                                engine_torque.append(text)
-                            else: 
-                                print('else t-')
-                                engine_torque.append('') 
-                    else:
-                        if(ll==8):
-                            if(text1=='Fuel Pump'):
-                                engine_fuelpump.append(text)
-                    if(ll==9):
-                        if(text1=='Torque'):
-                            print('t-')
-                            engine_torque.append(text)
-                        else: 
-                            print('else t-')
-                            engine_torque.append('') 
-                except NoSuchElementException as e:
-                    print('no such element',text1)  
-                    # if(text1=='Fuel Pump'):engine_fuelpump.append('')
-                    # if(text1=='Torque'):engine_torque.append('')  
-            if(len(tr)==7):
-                print('length is 7')
-                engine_fuelpump.append('') 
-                engine_torque.append('') 
+        try:
+            if('Capacity CC' in child_text_list):
+                index =  child_text_list.index('Capacity CC')
+                engine_capaity.append(chlid_ans_list[index])
+            else:
+                engine_capaity.append('')
+
+            if('Engine Rated RPM' in child_text_list):
+                index =  child_text_list.index('Engine Rated RPM')
+                engine_rpm.append(chlid_ans_list[index])
+            else:
+                engine_rpm.append('')
+
+            if('Cooling' in child_text_list):
+                index =  child_text_list.index('Cooling')
+                engine_cooling.append(chlid_ans_list[index])
+            else:
+                engine_cooling.append('')
+
+            if('Air Filter' in child_text_list):
+                index =  child_text_list.index('Air Filter')
+                engine_airfilter.append(chlid_ans_list[index]) 
+            else:
+                engine_airfilter.append('')  
+
+            if('Fuel Pump' in child_text_list):
+                index =  child_text_list.index('Fuel Pump')
+                engine_fuelpump.append(chlid_ans_list[index])
+            else:
+                engine_fuelpump.append('')
+
+            if('Torque' in child_text_list):
+                index =  child_text_list.index('Torque')
+                engine_torque.append(chlid_ans_list[index]) 
+            else:
+                engine_torque.append('')  
+        except NoSuchElementException as e:
+            print('no engine')
+    else:
+        print('else engine')
+
+    if 'Transmission' in tab_text_list:
+        el_index = tab_text_list.index('Transmission')
+        print('in-', el_index)
+        element = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")))
+        element.click()
+        time.sleep(.5)
+        ele= driver.find_element(By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")     
+        tr=  ele.find_elements(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr")
+        
+        child_text_list =['','','']
+        chlid_ans_list=['','','']
+        for ll in range(1,(len(tr)+1)):
+            print('ll-', ll)
+            text1=ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
+            child_text_list.append(text1)
+            text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
+            chlid_ans_list.append(text)
+        print('transmission child_text_list-', child_text_list)
+
+        try:
+            if('Type' in child_text_list):
+                index =  child_text_list.index('Type')
+                transmission_type.append(chlid_ans_list[index])
+            else:
+                transmission_type.append('')
+
+            if('Clutch' in child_text_list):
+                index =  child_text_list.index('Clutch')
+                transmission_clutch.append(chlid_ans_list[index])
+            else:
+                transmission_clutch.append('')
+
+            if('Gear Box' in child_text_list):
+                index =  child_text_list.index('Gear Box')
+                transmission_gear.append(chlid_ans_list[index])
+            else:
+                transmission_gear.append('')
+
+            if('Battery' in child_text_list):
+                index =  child_text_list.index('Battery')
+                transmission_battery.append(chlid_ans_list[index]) 
+            else:
+                transmission_battery.append('')  
+
+            if('Alternator' in child_text_list):
+                index =  child_text_list.index('Alternator')
+                transmission_alternator.append(chlid_ans_list[index])
+            else:
+                transmission_alternator.append('')
+
+            if('Forward Speed' in child_text_list):
+                index =  child_text_list.index('Forward Speed')
+                transmission_fspeed.append(chlid_ans_list[index]) 
+            else:
+                transmission_fspeed.append('')
                 
-        if(l==3):
-            print('transmission--lengthtr// ',len(tr))
-            for ll in range(1,len(tr)+1):
-                print('ll//-', ll)
-                text1=   ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
-                text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
-                if(ll==1):
-                    if(len(tr)==6): 
-                        if(text1 == 'Clutch'):
-                            transmission_type.append('')
-                            transmission_clutch.append(text)
-                        else:
-                            transmission_type.append(text)    
-                    else: 
-                        transmission_type.append(text)           
-                if( ll == 2):
-                    if(len(tr)==6):
-                        if(text1 == 'Gear Box'): 
-                            transmission_gear.append(text)
-                        else:
-                            transmission_clutch.append(text)    
-                    else: 
-                        if(text1 == 'Clutch'):
-                            transmission_clutch.append(text)
-                        else:
-                            transmission_clutch.append(text)
-                if( ll ==3):
-                    if(len(tr)==6):
-                        if(text1 == 'Battery'): 
-                            transmission_battery.append(text)
-                        else:
-                            transmission_gear.append(text) 
-                    else:        
-                        if(text1 == 'Gear Box'):
-                            transmission_gear.append(text)
-                        else:
-                            transmission_gear.append(text)    
-                if(len(tr)==7):
-                    print('trlength-7')
-                    if( ll == 4):
-                        if(text1=='Battery'):
-                            transmission_battery.append(text)
-                    if( ll == 5):
-                        if(text1=='Alternator'):
-                            transmission_alternator.append(text)
-                    if( ll == 6):
-                        if(text1 == 'Forward Speed'):
-                            transmission_fspeed.append(text)
-                    if( ll == 7):
-                        if(text1 == 'Reverse Speed'):
-                            transmission_rspeed.append(text)
-                if(len(tr)==6): 
-                    print('trlength-6')
-                    if(ll == 4):
-                        if(ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child(3) td:nth-child(1)").text == 'Battery'):
-                            print('here----2')
-                        else:    
-                            print('here///---')
-                            if(text1=='Battery'):
-                                transmission_battery.append(text)
-                            else:
-                                transmission_battery.append('')
+            if('Reverse Speed' in child_text_list):
+                index =  child_text_list.index('Reverse Speed')
+                transmission_rspeed.append(chlid_ans_list[index]) 
+            else:
+                transmission_rspeed.append('')
+        except NoSuchElementException as e:
+            print('no engine')
+    else:
+        print('else transmission..')
 
-                        if(text1=='Alternator'):
-                            transmission_alternator.append(text)
-                        else:
-                            transmission_alternator.append('')
-
-                    if(ll == 5 and text1 == 'Forward Speed'):
-                        transmission_fspeed.append(text)
-                    if(ll == 6 and text1 == 'Reverse Speed'):
-                        transmission_rspeed.append(text)    
-
-                if(len(tr)==5):
-                    print('trlength-5')
-                    if( ll == 4):
-                        if(text1 == 'Forward Speed'):
-                            transmission_fspeed.append(text)
-                            transmission_battery.append('')
-                    if( ll == 5):
-                        if(text1 == 'Reverse Speed'):
-                            transmission_rspeed.append(text)
-                            transmission_alternator.append('')
+    if 'Steering' in tab_text_list:
+        el_index = tab_text_list.index('Steering')
+        print('in-', el_index)
+        element = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")))
+        element.click()
+        time.sleep(.5)
+        ele= driver.find_element(By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")     
+        tr=  ele.find_elements(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr")
         
-        if(l==5):
-            for ll in range(1,len(tr)+1):
-                print('ll-', ll)
-                try:
-                    text= ele.find_element(By.CSS_SELECTOR,"div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
-                    if(ll==1):
-                        steering_type.append(text)    
-                    if( ll == 2):
-                        steering_column.append(text)
-                except NoSuchElementException as e:
-                    print('no such steering//')         
-        if(l==6):
-            for ll in range(1,len(tr)+1):
-                print('ll-', ll)
-                try:
-                    text1=  ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
-                    text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
-                    if(len(tr)==1):
-                        print('powertake-length1--')
-                        if(text1 == 'Type'):
-                            power_take_type.append(text)
-                        else:
-                            power_take_type.append('')
-                            power_take_rpm.append('')
+        child_text_list =['','','']
+        chlid_ans_list=['','','']
+        for ll in range(1,(len(tr)+1)):
+            print('ll-', ll)
+            text1=ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
+            child_text_list.append(text1)
+            text= ele.find_element(By.CSS_SELECTOR,"div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
+            chlid_ans_list.append(text)
+        print('steering child_text_list-', child_text_list,chlid_ans_list)
 
-                            total_weight.append('')
-                            wheel_base.append('')
-                            overall_length.append('')
-                            overall_width.append('')
-                            ground_clearance.append('')
-                            turning_radius.append('')
+        try:
+            if('Type' in child_text_list):
+                index =  child_text_list.index('Type')
+                steering_type.append(chlid_ans_list[index])
+            else:
+                steering_type.append('')
+            if('Steering Column' in child_text_list):
+                index =  child_text_list.index('Steering Column')
+                steering_column.append(chlid_ans_list[index])
+            else:
+                steering_column.append('')
 
-                            hydraulics_cap.append(text) 
-                            hydraulics_linkage.append('')
-                    else:
-                        print('powertake-length>1--')
-                        if(ll==1):
-                            power_take_type.append(text)
-                        if(ll == 2):
-                            power_take_rpm.append(text)
+        except NoSuchElementException as e:
+            print('no steering')
+    else:
+        print('else steering...')    
 
-                            # total_weight.append('')
-                            # wheel_base.append('')
-                            # overall_length.append('')
-                            # overall_width.append('')
-                            # ground_clearance.append('')
-                            # turning_radius.append('')
-
-                except NoSuchElementException as e:
-                    print('no poer teck...')
+    if 'Power Take Off' in  tab_text_list:
+        el_index = tab_text_list.index('Power Take Off')
+        print('in-', el_index)
+        element = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")))
+        element.click()
+        time.sleep(.5)
+        ele= driver.find_element(By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")     
+        tr=  ele.find_elements(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr")
         
-        # if(l==7):
-        #     for ll in range(1,len(tr)+1):
-        #         print('ll-', ll)
-        #         text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
-        #         if(ll==1):
-        #             hydraulics_cap.append(text)    
-        #         if( ll == 2):
-        #             hydraulics_linkage.append(text)
-        # if(l==7):
-        #     for ll in range(1,len(tr)+1):
-        #         print('ll-', ll)
-        #         try:
-        #             text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
-        #             if(len(tr)==1):
-        #                 wheel_drive.append(text)
-        #                 front_tyres.append('')
-        #                 rear_tyres.append('')
-        #             else:    
-        #                 if(ll==1):
-        #                     wheel_drive.append(text)    
-        #                 if( ll == 2):
-        #                     front_tyres.append(text)
-        #                 if( ll == 3):
-        #                     rear_tyres.append(text)
-        #         except NoSuchElementException as e:
-        #             print('No such driver')     
+        child_text_list =['','','']
+        chlid_ans_list=['','','']
+        for ll in range(1,(len(tr)+1)):
+            print('ll-', ll)
+            text1=ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
+            child_text_list.append(text1)
+            text= ele.find_element(By.CSS_SELECTOR,"div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
+            chlid_ans_list.append(text)
+        print('power child_text_list-', child_text_list)
 
-        if(l==8):
-            print('l is 8////- ', len(tr))
-            for ll in range(1,(len(tr)+1)):
-                print('ll-', ll)
-                try:
-                    text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
-                    if(len(tr)==2):
-                        if(ll==1):
-                            if(text1=='Lifting Capacity'):
-                                total_weight.append('')   
-                                wheel_base.append('')
-                                overall_length.append('')
-                                overall_width.append('')
-                                ground_clearance.append('')
-                                turning_radius.append('')
-                                hydraulics_cap.append(text)
-                            elif(text1 == 'Total Weight'):
-                                total_weight.append(text)
-                            else:
-                                total_weight.append('') 
-                                wheel_base.append(text)
-                        if(ll==2):
-                            if(text1=='3 point Linkage'):
-                                hydraulics_linkage.append(text)
-                            elif(text1=='Wheel Base'):
-                                wheel_base.append(text)
-                                overall_length.append('')
-                                overall_width.append('')
-                                ground_clearance.append('')
-                                turning_radius.append('')  
-                            else:
-                                overall_length.append(text)
-                                overall_width.append('')
-                                ground_clearance.append('')
-                                turning_radius.append('')
-                            # hydraulics_cap.append(text) 
-                            # hydraulics_linkage.append(text)
+        try:
+            if('Type' in child_text_list):
+                index =  child_text_list.index('Type')
+                power_take_type.append(chlid_ans_list[index])
+            else:
+                power_take_type.append('')
 
-                            # accessories_list.append('')
-                            # additional_feature.append('')
-                            # warranty_status.append('')
-                            # status.append(text) 
-                    elif(len(tr)==1):
-                        total_weight.append('')   
-                        wheel_base.append('')
-                        overall_length.append('')
-                        overall_width.append('')
-                        ground_clearance.append('')
-                        turning_radius.append('')
-                        hydraulics_cap.append(text) 
-                        hydraulics_linkage.append('')
-                    else:
-                        if(ll==1):
-                            total_weight.append(text)    
-                        if( ll == 2):
-                            wheel_base.append(text)
-                        if(len(tr)==5):
-                            if( ll == 3):
-                                overall_length.append(text)
-                            if(ll== 4):
-                                overall_width.append(text)
-                            if(ll==5):	
-                                ground_clearance.append(text)
-                                turning_radius.append('')
-                        if(len(tr)==6):
-                            if( ll == 3):
-                                overall_length.append(text)
-                            if(ll== 4):
-                                overall_width.append(text)
-                            if(ll==5):	
-                                ground_clearance.append(text)
-                            if(ll==6):    
-                                turning_radius.append(text) 
-                        if(len(tr)==3):
-                            if(ll == 3):
-                                overall_length.append('')
-                                overall_width.append('')
-                                ground_clearance.append(text)
-                                turning_radius.append('')  
-                        if(len(tr)==2):
-                            if(ll == 2):
-                                overall_length.append('')
-                                overall_width.append('')
-                                ground_clearance.append('')
-                                turning_radius.append('')              
-                except NoSuchElementException as e:
-                    total_weight.append('')
-                    wheel_base.append('')
-                    overall_length.append('')
-                    overall_width.append('')
-                    ground_clearance.append('')
-                    turning_radius.append('')
+            if('RPM' in child_text_list):
+                index =  child_text_list.index('RPM')
+                power_take_rpm.append(chlid_ans_list[index])
+            else:
+                power_take_rpm.append('')
+        except NoSuchElementException as e:
+            print('no steering')
+    else:
+        power_take_type.append('')
+        power_take_rpm.append('')
 
-        if(l==9):
-            for ll in range(1,len(tr)+1):
-                print('ll-', ll)
-                text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
-                if(len(tr) == 1):
-                    hydraulics_cap.append(text)    
-                    hydraulics_linkage.append('')
-              
-                else:    
-                    if(ll==1):
-                        # total_weight.append('')   
-                        # wheel_base.append('')
-                        # overall_length.append('')
-                        # overall_width.append('')
-                        # ground_clearance.append('')
-                        # turning_radius.append('')
-                        hydraulics_cap.append(text)    
-                    if( ll == 2):
-                        hydraulics_linkage.append(text)
+    if 'Dimensions And Weight Of Tractor' in  tab_text_list:
+        el_index = tab_text_list.index('Dimensions And Weight Of Tractor')
+        print('in-', el_index)
+        element = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")))
+        element.click()
+        time.sleep(.5)
+        ele= driver.find_element(By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")     
+        tr=  ele.find_elements(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr")
+        child_text_list =['']
+        chlid_ans_list=['']
+        for ll in range(1,(len(tr)+1)):
+            print('ll-', ll)
+            text1=ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
+            child_text_list.append(text1)
+            text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
+            chlid_ans_list.append(text)
+        print('dimension child_text_list-', child_text_list)
 
-        if(l==10):
-            for ll in range(1,len(tr)+1):
-                print('ll-', ll)
-                text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
-                if(len(tr)==1):
-                    wheel_drive.append(text)    
-                    front_tyres.append('')
-                    rear_tyres.append('')
-                else:    
-                    if(ll==1):
-                        wheel_drive.append(text)    
-                    if( ll == 2):
-                        front_tyres.append(text)
-                    if( ll == 3):
-                        rear_tyres.append(text)
-        
-        if(l==11):
-            print('Otherinfo---')
-            for ll in range(1, (len(tr)+1)):
-                print('ll-', ll)
-                text1=   ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
-                text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
-                if(len(tr)==4):
-                    if(ll==1):
-                        if(text1 == 'Accessories'):
-                            accessories_list.append(text)
-                        else: 
-                            additional_feature.append(text)   
-                        # print('ac...')
-                        # accessories_list.append(text)
-                    if(ll==2):
-                        print('ad...')
-                        if(text1 == 'Additional Features'):
-                            print('ad///')
-                            additional_feature.append(text)
-                        elif(text1 == 'Options'):
-                            print('option--///')  
-                            additional_feature.append('')
-                        elif(text1 == 'Warranty'):
-                            warranty_status.append(text)
-                        else:
-                            print('ad st///')
-                            additional_feature.append('')
-                            warranty_status.append(text)
-                    if(ll==3):
-                        print('w///')
-                        if(text1 == 'Warranty'):
-                            print('w-///')
-                            warranty_status.append(text)
-                        else:
-                            print('w-st///')
-                            status.append(text)        
-                    if(ll==4):
-                        print('st///')
-                        if(text1 == 'Status'):
-                            print('st-s///')
-                            status.append(text)  
-                if(len(tr) == 3):  
-                    if(ll==1):
-                        if(text1== 'Accessories'):
-                            accessories_list.append(text)
-                            additional_feature.append('') 
-                        else:
-                            accessories_list.append('')
-                            additional_feature.append('')
-                            warranty_status.append(text)   
-                    if(ll==2):
-                        if(text1== 'Warranty'):
-                            warranty_status.append(text)
-                        else:
-                            status.append(text)  
-                    if(ll==3):
-                        if(text1== 'Status'):
-                            status.append(text)
-                
-                if(len(tr) == 2):  
-                    if(ll==1):
-                        if(text1== 'Accessories'):
-                            accessories_list.append(text)
-                            additional_feature.append('') 
-                        else:
-                            accessories_list.append('')
-                            additional_feature.append('')
-                            warranty_status.append(text)   
-                    if(ll==2):
-                        if(text1== 'Warranty'):
-                            warranty_status.append(text)
-                        else:
-                            status.append(text) 
+        try:
+            if('Total Weight' in child_text_list):
+                index =  child_text_list.index('Total Weight')
+                total_weight.append(chlid_ans_list[index])
+            else:
+                total_weight.append('')
 
-                if(len(tr)==5):
-                    if(ll==1):
-                        accessories_list.append(text)
-                    if(ll==3):
-                        if(text1 == 'Additional Features'):
-                            additional_feature.append(text)
-                    if(ll==4):
-                        warranty_status.append(text)
-                    if(ll==5):
-                        if(text1 == 'Status'):
-                            status.append(text)  
-    
-        # except ElementClickInterceptedException:
-        #     print('Tring to click on button again')
-        #     # driver.execute_script("arguments[0].click()", element)
+            if('Wheel Base' in child_text_list):
+                index =  child_text_list.index('Wheel Base')
+                wheel_base.append(chlid_ans_list[index])
+            else:
+                wheel_base.append('')
+
+            if('Overall Length' in child_text_list):
+                index =  child_text_list.index('Overall Length')
+                overall_length.append(chlid_ans_list[index])
+            else:
+                overall_length.append('') 
+
+            if('Overall Width' in child_text_list):
+                index =  child_text_list.index('Overall Width')
+                overall_width.append(chlid_ans_list[index])
+            else:
+                overall_width.append('') 
+
+            if('Ground Clearance' in child_text_list):
+                index =  child_text_list.index('Ground Clearance')
+                ground_clearance.append(chlid_ans_list[index])
+            else:
+                ground_clearance.append('') 
+
+            if('Turning Radius With Brakes' in child_text_list):
+                index =  child_text_list.index('Turning Radius With Brakes')
+                turning_radius.append(chlid_ans_list[index])
+            else:
+                turning_radius.append('') 
+        except NoSuchElementException as e:
+            print('no dimension')
+    else:
+        total_weight.append('')
+        wheel_base.append('')
+        overall_length.append('')
+        overall_width.append('')
+        ground_clearance.append('')
+        turning_radius.append('')  
+
+    if 'Hydraulics' in  tab_text_list:
+        el_index = tab_text_list.index('Hydraulics')
+        print('in-', el_index)
+        element = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")))
+        element.click()
+        time.sleep(.5)
+        ele= driver.find_element(By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")     
+        tr=  ele.find_elements(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr")
+        child_text_list =['']
+        chlid_ans_list=['']
+        for ll in range(1,(len(tr)+1)):
+            print('ll-', ll)
+            text1=ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
+            child_text_list.append(text1)
+            text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
+            chlid_ans_list.append(text)
+        print('hy child_text_list-', child_text_list)
+
+        try:
+            if('Lifting Capacity' in child_text_list):
+                index =  child_text_list.index('Lifting Capacity')
+                hydraulics_cap.append(chlid_ans_list[index])
+            else:
+                hydraulics_cap.append('')
+
+            if('3 point Linkage' in child_text_list):
+                index =  child_text_list.index('3 point Linkage')
+                hydraulics_linkage.append(chlid_ans_list[index])
+            else:
+                hydraulics_linkage.append('')
+
+        except NoSuchElementException as e:
+            print('no hydraulics')
+    else:
+        hydraulics_cap.append('') 
+        hydraulics_linkage.append('')
+
+    if 'Wheels And Tyres' in  tab_text_list:
+        el_index = tab_text_list.index('Wheels And Tyres')
+        print('in-', el_index)
+        element = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")))
+        element.click()
+        time.sleep(.5)
+        ele= driver.find_element(By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")     
+        tr=  ele.find_elements(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr")
+        child_text_list =['']
+        chlid_ans_list=['']
+        for ll in range(1,(len(tr)+1)):
+            print('ll-', ll)
+            text1=ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
+            child_text_list.append(text1)
+            text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
+            chlid_ans_list.append(text)
+        print('wheel child_text_list-', child_text_list)
+
+        try:
+            if('Wheel drive' in child_text_list):
+                index =  child_text_list.index('Wheel drive')
+                wheel_drive.append(chlid_ans_list[index])   
+            else:
+                wheel_drive.append('')  
+
+            if('Front' in child_text_list):
+                index =  child_text_list.index('Front')
+                front_tyres.append(chlid_ans_list[index])
+            else:
+                front_tyres.append('')
+
+            if('Rear' in child_text_list):
+                index =  child_text_list.index('Rear')
+                rear_tyres.append(chlid_ans_list[index])
+            else:
+                rear_tyres.append('')    
+
+        except NoSuchElementException as e:
+            print('no wheel')
+    else:
+        wheel_drive.append('')    
+        front_tyres.append('')
+        rear_tyres.append('')
+
+
+    if 'Other Information' in  tab_text_list:
+        el_index = tab_text_list.index('Other Information')
+        print('in-', el_index)
+        element = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")))
+        element.click()
+        time.sleep(.5)
+        ele= driver.find_element(By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")     
+        tr=  ele.find_elements(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr")
+        child_text_list =['']
+        chlid_ans_list=['']
+        for ll in range(1,(len(tr)+1)):
+            print('ll-', ll)
+            text1=ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
+            child_text_list.append(text1)
+            text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
+            chlid_ans_list.append(text)
+        print('other child_text_list-', child_text_list)
+
+        try:
+            if('Accessories' in child_text_list):
+                index =  child_text_list.index('Accessories')
+                accessories_list.append(chlid_ans_list[index])   
+            else:
+                accessories_list.append('') 
+
+            if('Additional Features' in child_text_list):
+                index =  child_text_list.index('Additional Features')
+                additional_feature.append(chlid_ans_list[index]) 
+            else:
+                additional_feature.append('') 
+
+            if('Warranty' in child_text_list):
+                index =  child_text_list.index('Warranty')
+                warranty_status.append(chlid_ans_list[index])
+            else:
+                warranty_status.append('')
+
+            if('Status' in child_text_list):
+                index =  child_text_list.index('Status')
+                status.append(chlid_ans_list[index])
+            else:
+                status.append('')        
+        except NoSuchElementException as e:
+            print('no other')
+    else:
+        accessories_list.append('')
+        additional_feature.append('') 
+        warranty_status.append('')
+        status.append('')
 
     driver.back()
     time.sleep(2)
@@ -659,7 +657,7 @@ data_dict = {
     'Power_Take_Off_RPM':power_take_rpm,
     'Total_Weight':total_weight,
     'Wheel_Base':wheel_base,
-    'Overall_Base':overall_length,
+    'Overall_Length':overall_length,
     'Overall_Width':overall_width,
     'Ground_Clearance':ground_clearance,
     'Turning_Radius':turning_radius,
