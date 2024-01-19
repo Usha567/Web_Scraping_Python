@@ -672,10 +672,10 @@ while buttonText == 'Load More Tractors':
                             load_more.click()
                             time.sleep(1)
                             load_more.click()
-                            time.sleep(2)
+                            time.sleep(1)
                             load_more.click()
                             print('clicked on modal...///')
-                            time.sleep(2)
+                            # time.sleep(1)
 
                         except ElementClickInterceptedException as e:
                             print('ElementClickInterceptedException---///')
@@ -683,11 +683,11 @@ while buttonText == 'Load More Tractors':
                         except TimeoutException as e:
                             print('TimeoutException for load more btn..//')    
 
-                    
                     except ElementClickInterceptedException:
                             print('ElementClickInterceptedException+++....')
                     except TimeoutException as e:
                         print('TimeoutException for loop-///+++')
+
             except TimeoutException as e:
                 print('TimeoutException for loop------+++')
             except ElementClickInterceptedException:

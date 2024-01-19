@@ -19,7 +19,7 @@ options.add_argument("--disable-popup-blocking")
 
 driver = webdriver.Chrome()
 
-driver.get('https://www.tractorjunction.com/mahindra-tractor/475-di/')
+driver.get('https://www.tractorjunction.com/sonalika-tractor/mm-39-di/')
 
 wait = WebDriverWait(driver, 15)
 # driver.execute_script('window.scrollTo(0, 500)')
@@ -95,7 +95,7 @@ warranty_status =[]
 status=[]
 
 try:
-    close_modal= WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
+    close_modal= WebDriverWait(driver, 25).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
     close_modal.click()
 
     # time.sleep(1)
@@ -109,8 +109,9 @@ try:
     print('title-', brand_list, model_list)
 
     model_name=[]
-    model_name_ = driver.find_element(By.CSS_SELECTOR, 
-    "div.product-single-top>div.product-tooltip>h1").text
+    # model_name_ = driver.find_element(By.CSS_SELECTOR, 
+    #         "div.product-single-top>div.product-tooltip>h1").text
+    model_name_ = driver.find_element(By.XPATH, "//li[@itemprop='itemListElement']/span[@itemprop='name']").text
     model_name.append(model_name_)
 
     feature = driver.find_elements(By.CSS_SELECTOR, "div.product-single-features-inner")
@@ -194,8 +195,20 @@ try:
         print('i-', ii)
         tab_text =  driver.find_element(By.CSS_SELECTOR,
             "div.acc-container div.acc:nth-child("+str(ii)+")").text
-        tractor_model = model_name[0]+' ' 
-        print('tab_text-',tractor_model,  tab_text, re.split(tractor_model, tab_text))
+        # brand = brand_list[0].replace('Tractors', '')    
+        # tractor_model = model_name[0]+'' 
+        tractor_model = model_name[0]+' '
+        # te=tractor_model[4:len(tractor_model)]
+        print('tab_text-',tractor_model, tab_text)
+        # match = re.search(te, tab_text)
+        # if match:
+        #     t = tab_text.replace(match.group(), '')
+        #     ttt=t[14:len(t)]
+        #     tt=t.lstrip()
+        #     print('tt-', t,ttt)
+        #     tab_text_list.append(ttt)
+        # else:
+        #     print('/////////match not found-')    
         t=re.split(tractor_model, tab_text)[1]
         tab_text_list.append(t)
 
