@@ -127,15 +127,19 @@ if buttonText == 'Load More Tractors':
         if buttonText != 'Load More Tractors':
             break
         else:  
-            count +=1
-            print('count-', count)
-            load_more = WebDriverWait(driver, 4).until(EC.element_to_be_clickable((By.ID, "loadmorebtn")))
-            driver.execute_script("arguments[0].click();", load_more)
-            print('clicked on load')  
+            try:
+                count +=1
+                print('count-', count)
+                load_more = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "loadmorebtn")))
+                driver.execute_script("arguments[0].click();", load_more)
+                print('clicked on load')  
+            except TimeoutException as e:
+                print('TimeoutException for load more..')
     print('click3',count)
 
-
-    for i in range(100, 180):
+   #100-180
+#    122
+    for i in range(690,700):
         print('looping start...i-', i)
 
         try:

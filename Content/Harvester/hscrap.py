@@ -108,22 +108,25 @@ if buttonText == 'Load More Harvesters':
     # time.sleep(1)
 
     # For load more harvester 
-    # count=0
-    # buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')
-    # while buttonText == 'Load More Tractors':
-    #     buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')    
-    #     if buttonText != 'Load More Tractors':
-    #         break
-    #     else:  
-    #         count +=1
-    #         print('count-', count)
-    #         load_more = WebDriverWait(driver, 4).until(EC.element_to_be_clickable((By.ID, "loadmorebtn")))
-    #         driver.execute_script("arguments[0].click();", load_more)
-    #         print('clicked on load')  
-    # print('click3',count)
+    count=0
+    buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')
+    while buttonText == 'Load More Harvesters':
+        buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')    
+        if buttonText != 'Load More Harvesters':
+            break
+        else:  
+            try:
+                count +=1
+                print('count-', count)
+                load_more = WebDriverWait(driver, 4).until(EC.element_to_be_clickable((By.ID, "loadmorebtn")))
+                driver.execute_script("arguments[0].click();", load_more)
+                print('clicked on load')
+            except TimeoutException as e:
+                print('TimeoutException for load more harvester..')
+    print('click3',count)
 
 
-    for i in range(1, 2):
+    for i in range(13, 109):
         print('looping start...i-', i)
 
         try:
@@ -206,39 +209,19 @@ if buttonText == 'Load More Harvesters':
             about=driver.find_element(By.CSS_SELECTOR, 'div.product_description_main').text
             about_list.append(about)
             
-            tr_list =driver.find_elements(By.CSS_SELECTOR,"div.product-single-content div.text-editor-block div.table-block table>tbody tr")
-            sel_tr_list=[] 
-            tab_ans_list=['','']
+            # tab_ele =driver.find_elements(By.CSS_SELECTOR,"div.product-single-content div.text-editor-block div.table-block table>tbody tr")
+            # tab_text_list=[] 
+           
 
-            for tr in tr_list:
-                tr_text = tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)>p")
-                text = (tr_text.text).lstrip()
-                if 'TYPE' == text:
-                    print('tr--', tr)
-                    sel_tr_list.append(tr)
+            # for i in range(2, len(tab_ele)):
+            #     print('ele--- ',i, '\n')
+            #     ele = driver.find_elements(By.CSS_SELECTOR,"div.product-single-content div.text-editor-block div.table-block table>tbody tr:nth-child("+str(i)+")")
+            #     for e in ele:
+            #         text=e.find_element(By.XPATH, "//td[@colspan='2']/p").text
+            #     # text = ele.find_element(By.XPATH, "//td[@colspan='2']/p").text
+            #         tab_text_list.append(text)
 
-            print('sel_tr_list- ', sel_tr_list, len(sel_tr_list))
-            # for ele in tab_ele:
-            #     tr_text = ele.find_element(By.CSS_SELECTOR, "td:nth-child(1)>p")
-            #     text = (tr_text.text).lstrip()
-            #     tab_text_list.append(text)
-
-            #     try:
-            #         tr_text = ele.find_element(By.CSS_SELECTOR, "td:nth-child(1)>p")
-            #         print('tr_text-- ', tr_text,'\n')
-
-            #         child_text = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "td:nth-child(2)>p")))
-            #         child_text_ = ele.find_element(By.CSS_SELECTOR, "td:nth-child(2)>p")
-            #         print('child_text///-', child_text)
-
-            #         ans_text = (child_text_.text).lstrip()
-            #         tab_ans_list.append(ans_text)
-            #     except NoSuchElementException as e:
-            #         print('No td 2nd child')
-
-
-
-            # print('tab_ele-', len(tab_ele),tab_ans_list ) 
+            # print('tab_ele-', len(tab_ele), tab_text_list) 
             # for ii in range(2, len(tab_ele)+2):
             #     print('i-', i, ii)
             #     tab_text =  driver.find_element(
@@ -664,9 +647,9 @@ if buttonText == 'Load More Harvesters':
                 load_more = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.ID, "loadmorebtn")))
                 
                 buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')
-                while buttonText == 'Load More Tractors':
+                while buttonText == 'Load More Harvesters':
                     buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')    
-                    if buttonText != 'Load More Tractors':
+                    if buttonText != 'Load More Harvesters':
                         break
                     else:  
                         load_more = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.ID, "loadmorebtn")))
@@ -703,7 +686,7 @@ data_dict = {
     # # 'Features':feature_list,
     # 'About':about_list,
     # 'Engine_Capacity':engine_capaity,
-    'Engine_Rated_RPM':engine_rpm,
+    # 'Engine_Rated_RPM':engine_rpm,
 #     'Engine_Cooling':engine_cooling,
 #     'Engine_AirFilter':engine_airfilter,
 #     'Engine_FuelPump':engine_fuelpump,
@@ -738,7 +721,7 @@ data_dict = {
 df=pd.DataFrame.from_dict(data_dict, orient="index")
 df= df.transpose()
 
-writer = pd.ExcelWriter('Harvester_Infos.xlsx', engine='xlsxwriter')
+writer = pd.ExcelWriter('Harvester_Infos2.xlsx', engine='xlsxwriter')
 df.to_excel(writer, sheet_name='Sheet1', index=False,startrow=1, header=False)
 workbook=writer.book
 worksheet = writer.sheets['Sheet1']
