@@ -52,6 +52,7 @@ cutterwidth=[]
 powersource=[]
 crop=[]
 
+hp_power =[]
 pto_hp=[]
 gear_box=[]
 brakes=[]
@@ -64,6 +65,7 @@ engine_capaity=[]
 engine_rpm=[]
 engine_cooling=[]
 engine_airfilter=[]
+no_of_cylinder=[]
 engine_fuelpump=[]
 engine_torque=[]
 
@@ -100,6 +102,14 @@ additional_feature=[]
 warranty_status =[]
 status=[]
 
+engine_type=[]
+cutter_width = []
+cutter_min_height =[]
+cutter_max_height =[]
+height_adj=[]
+reel_type=[]
+reel_dia=[]
+
 buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')
 if buttonText == 'Load More Harvesters':
     print('enter if--')
@@ -123,7 +133,7 @@ if buttonText == 'Load More Harvesters':
     # print('click3',count)
 
 
-    for i in range(1, 2):
+    for i in range(1,2):
         print('looping start...i-', i)
 
         try:
@@ -207,443 +217,259 @@ if buttonText == 'Load More Harvesters':
             about_list.append(about)
             
             tr_list =driver.find_elements(By.CSS_SELECTOR,"div.product-single-content div.text-editor-block div.table-block table>tbody tr")
-            sel_tr_list=[] 
+            tr_text_list=[] 
             tab_ans_list=['','']
 
             for tr in tr_list:
-                tr_text = tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)>p")
+                tr_text = tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")
                 text = (tr_text.text).lstrip()
-                if 'TYPE' == text:
-                    print('tr--', tr)
-                    sel_tr_list.append(tr)
+                if ':' in text:
+                    tr_text_list.append(text[:-1])
+                else:    
+                    tr_text_list.append(text)
 
-            print('sel_tr_list- ', sel_tr_list, len(sel_tr_list))
-            # for ele in tab_ele:
-            #     tr_text = ele.find_element(By.CSS_SELECTOR, "td:nth-child(1)>p")
+            print('tr_text_list-', tr_text_list)    
+
+            # for tr in tr_list:
+            #     tr_text = tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")
             #     text = (tr_text.text).lstrip()
-            #     tab_text_list.append(text)
+
+            #     print('text--// ', text)
+
+            #     zero_index_tr_text = parent_tr_text=(tr_list[0].find_element(By.CSS_SELECTOR, "td:nth-child(1)").text).lstrip()
+            #     parent_tr_index = tr_list.index(tr)
+            #     parent_tr_text=(tr_list[parent_tr_index-1].find_element(By.CSS_SELECTOR, "td:nth-child(1)").text).lstrip()
+            #     # print('parent_tr_text--',parent_tr_text, zero_index_tr_text)
 
             #     try:
-            #         tr_text = ele.find_element(By.CSS_SELECTOR, "td:nth-child(1)>p")
-            #         print('tr_text-- ', tr_text,'\n')
+            #         print('enter try-', 'Engine'.capitalize() == (text.capitalize()).strip() and (parent_tr_text).strip() == (zero_index_tr_text).strip())
+            #         if 'TYPE'.capitalize() in [i.capitalize() for i in tr_text_list] and 'TYPE'.capitalize() == (text.capitalize()).strip() and (parent_tr_text).strip()=='Engine':
+            #             ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+            #             print('ans_texttype--/-', ans_text)
+            #             engine_type.append(ans_text)
 
-            #         child_text = WebDriverWait(driver,10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "td:nth-child(2)>p")))
-            #         child_text_ = ele.find_element(By.CSS_SELECTOR, "td:nth-child(2)>p")
-            #         print('child_text///-', child_text)
+            #         if 'Engine'.capitalize() == (text.capitalize()).strip() and (parent_tr_text).strip() == (zero_index_tr_text).strip():
+            #             if 'TYPE'.capitalize() not in [k.capitalize() for k in tr_text_list]:  
+            #                 ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+            #                 print('not type ans_text entinetype--/-', ans_text)
+            #                 engine_type.append(ans_text)
+            #             else:
+            #                 print('elsse')
+            #                 if 'TYPE'.capitalize() in [i.capitalize() for i in tr_text_list] and 'Engine'.capitalize() in [j.capitalize() for j in tr_text_list] and (parent_tr_text).strip()=='Engine':
+            #                     print('Type already Present///')
+            #                 elif 'TYPE'.capitalize() in [i.capitalize() for i in tr_text_list] and 'Engine'.capitalize() in [j.capitalize() for j in tr_text_list] and (parent_tr_text).strip() !='Engine':
+            #                     try:
+            #                         ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+            #                         print('ans_text entinetype--/-', ans_text)
+            #                         engine_type.append(ans_text) 
+            #                     except NoSuchElementException as e:
+            #                         engine_type.append('')
+            #                         print('No such element+++++++') 
+            #                 else:    
+            #                     engine_type.append('')
+                                    
 
-            #         ans_text = (child_text_.text).lstrip()
-            #         tab_ans_list.append(ans_text)
             #     except NoSuchElementException as e:
-            #         print('No td 2nd child')
+            #         print('No such element...')                
+            
+            if 'TYPE'.capitalize() in [(i.capitalize()).strip() for i in tr_text_list]:
+                print('Type in tr_text_list')
+                index_of = [(i.capitalize()).strip() for i in tr_text_list].index('TYPE'.capitalize())
+               
+                zero_index_tr_text =(tr_list[0].find_element(By.CSS_SELECTOR, "td:nth-child(1)").text).lstrip()
+                parent_tr_text=(tr_list[index_of-1].find_element(By.CSS_SELECTOR, "td:nth-child(1)").text).lstrip()
 
+                print('parent_tr_text-', parent_tr_text)
 
+                if (parent_tr_text.capitalize()).strip() == 'Engine':
+                    print('if Engine is parent....')
+                    for tr in tr_list:
 
-            # print('tab_ele-', len(tab_ele),tab_ans_list ) 
-            # for ii in range(2, len(tab_ele)+2):
-            #     print('i-', i, ii)
-            #     tab_text =  driver.find_element(
-            #         By.XPATH,"//div[@class='product-single-content']/div[@class='text-editor-block']/div[@class='table-block']/table/tbody/tr/td[@colspan='2']/p"
-            #         By.CSS_SELECTOR,
-            #         "div.acc-container div.acc:nth-child("+str(ii)+")").text
-            #     tab_text_list.append(tab_text)
+                        parent_tr_index = tr_list.index(tr)
+                        parent_tr_text=(tr_list[parent_tr_index-1].find_element(By.CSS_SELECTOR, "td:nth-child(1)").text).lstrip()
+                        # print('parent_tr_text--',parent_tr_text)
+                        tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                        if ':' in tr_text:
+                            tr_text = tr_text[:-1]
+                        if  (parent_tr_text.capitalize()).strip() == 'Engine':   
+                            if (tr_text.capitalize()).strip() == 'TYPE'.capitalize():
+                                ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                                print('ans_texttype--/-', ans_text)
+                                engine_type.append(ans_text)
 
-            # print('tab_text_list-', tab_text_list)
-            # if 'Engine' in tab_text_list:
-            #     el_index = tab_text_list.index('Engine')
-            #     print('in-', el_index)
-            #     element = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,
-            #         "div.acc-container div.acc:nth-child("+str(el_index)+")")))
-            #     element.click()
-            #     time.sleep(.5)
-            #     ele= driver.find_element(By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")     
-            #     tr=  ele.find_elements(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr")
+                elif (parent_tr_text.capitalize()).strip() != 'Engine' and 'Engine'.capitalize() in [(i.capitalize()).strip() for i in tr_text_list]:
+                    print('if Engine is not parent....')
+                    for tr in tr_list:
+                        tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                        if ':' in tr_text:
+                            tr_text = tr_text[:-1]
+                        if (tr_text.capitalize()).strip() == 'Engine'.capitalize():
+                            try:
+                                ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                                print('ans_texttype--/-', ans_text)
+                                engine_type.append(ans_text)
+                            except NoSuchElementException as e:
+                                print('no such element--/-') 
+                                engine_type.append('') 
+                else:
+                    engine_type.append('')
 
-            #     child_text_list =['','','']
-            #     chlid_ans_list=['','','']
-            #     for ll in range(1,(len(tr)+1)):
-            #         print('ll-', ll)
-            #         text1=ele.find_element(By.CSS_SELECTOR, 
-            #         "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
-            #         child_text_list.append(text1)
-            #         text = ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
-            #         chlid_ans_list.append(text)
-            #     print('engine child_text_list-', child_text_list,chlid_ans_list)
+            if 'TYPE'.capitalize() not in [(i.capitalize()).strip() for i in tr_text_list] and 'Engine'.capitalize() in [(i.capitalize()).strip() for i in tr_text_list]:
+                print('type is not and if Engine is parent....')
+                for tr in tr_list:
+                    tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                    if ':' in tr_text:
+                        tr_text = tr_text[:-1]
 
-            #     try:
-            #         if('Capacity CC' in child_text_list):
-            #             index =  child_text_list.index('Capacity CC')
-            #             engine_capaity.append(chlid_ans_list[index])
-            #         else:
-            #             engine_capaity.append('')
+                    if (tr_text.capitalize()).strip() == 'Engine'.capitalize():
 
-            #         if('Engine Rated RPM' in child_text_list):
-            #             index =  child_text_list.index('Engine Rated RPM')
-            #             engine_rpm.append(chlid_ans_list[index])
-            #         else:
-            #             engine_rpm.append('')
-
-            #         if('Cooling' in child_text_list):
-            #             index =  child_text_list.index('Cooling')
-            #             engine_cooling.append(chlid_ans_list[index])
-            #         else:
-            #             engine_cooling.append('')
-
-            #         if('Air Filter' in child_text_list):
-            #             index =  child_text_list.index('Air Filter')
-            #             engine_airfilter.append(chlid_ans_list[index]) 
-            #         else:
-            #             engine_airfilter.append('')  
-
-            #         if('Fuel Pump' in child_text_list):
-            #             index =  child_text_list.index('Fuel Pump')
-            #             engine_fuelpump.append(chlid_ans_list[index])
-            #         else:
-            #             engine_fuelpump.append('')
-
-            #         if('Torque' in child_text_list):
-            #             index =  child_text_list.index('Torque')
-            #             engine_torque.append(chlid_ans_list[index]) 
-            #         else:
-            #             engine_torque.append('')  
-            #     except NoSuchElementException as e:
-            #         print('no engine')
-            # else:
-            #     print('else engine')
-
-            # if 'Transmission' in tab_text_list:
-            #     el_index = tab_text_list.index('Transmission')
-            #     print('in-', el_index)
-            #     element = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")))
-            #     element.click()
-            #     time.sleep(.5)
-            #     ele= driver.find_element(By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")     
-            #     tr=  ele.find_elements(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr")
-                
-            #     child_text_list =['','','']
-            #     chlid_ans_list=['','','']
-            #     for ll in range(1,(len(tr)+1)):
-            #         print('ll-', ll)
-            #         text1=ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
-            #         child_text_list.append(text1)
-            #         text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
-            #         chlid_ans_list.append(text)
-            #     print('transmission child_text_list-', child_text_list)
-
-            #     try:
-            #         if('Type' in child_text_list):
-            #             index =  child_text_list.index('Type')
-            #             transmission_type.append(chlid_ans_list[index])
-            #         else:
-            #             transmission_type.append('')
-
-            #         if('Clutch' in child_text_list):
-            #             index =  child_text_list.index('Clutch')
-            #             transmission_clutch.append(chlid_ans_list[index])
-            #         else:
-            #             transmission_clutch.append('')
-
-            #         if('Gear Box' in child_text_list):
-            #             index =  child_text_list.index('Gear Box')
-            #             transmission_gear.append(chlid_ans_list[index])
-            #         else:
-            #             transmission_gear.append('')
-
-            #         if('Battery' in child_text_list):
-            #             index =  child_text_list.index('Battery')
-            #             transmission_battery.append(chlid_ans_list[index]) 
-            #         else:
-            #             transmission_battery.append('')  
-
-            #         if('Alternator' in child_text_list):
-            #             index =  child_text_list.index('Alternator')
-            #             transmission_alternator.append(chlid_ans_list[index])
-            #         else:
-            #             transmission_alternator.append('')
-
-            #         if('Forward Speed' in child_text_list):
-            #             index =  child_text_list.index('Forward Speed')
-            #             transmission_fspeed.append(chlid_ans_list[index]) 
-            #         else:
-            #             transmission_fspeed.append('')
+                        zero_index_tr_text = (tr_list[0].find_element(By.CSS_SELECTOR, "td:nth-child(1)").text).lstrip()
+                        parent_tr_index = tr_list.index(tr)
+                        parent_tr_text=(tr_list[parent_tr_index-1].find_element(By.CSS_SELECTOR, "td:nth-child(1)").text).lstrip()
                         
-            #         if('Reverse Speed' in child_text_list):
-            #             index =  child_text_list.index('Reverse Speed')
-            #             transmission_rspeed.append(chlid_ans_list[index]) 
-            #         else:
-            #             transmission_rspeed.append('')
-            #     except NoSuchElementException as e:
-            #         print('no engine')
-            # else:
-            #     print('else transmission..')
+                        if (parent_tr_text).strip() == (zero_index_tr_text).strip():
+                            try:
+                                ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                                print('ans_texttype--/-', ans_text)
+                                engine_type.append(ans_text)
+                            except NoSuchElementException as e:
+                                print('no such element--/-') 
+                                engine_type.append('') 
+            
+            if 'Engine Rated RPM' in [i for i in tr_text_list]:
+                for tr in tr_list:
+                    tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                    if ':' in tr_text:
+                        tr_text = tr_text[:-1]  
+                    if tr_text.strip() == 'Engine Rated RPM':
+                        ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                        print('rpm ans_texttype--/-', ans_text)
+                        engine_rpm.append(ans_text)
+            else:
+                engine_rpm.append('') 
 
-            # if 'Steering' in tab_text_list:
-            #     el_index = tab_text_list.index('Steering')
-            #     print('in-', el_index)
-            #     element = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")))
-            #     element.click()
-            #     time.sleep(.5)
-            #     ele= driver.find_element(By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")     
-            #     tr=  ele.find_elements(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr")
-                
-            #     child_text_list =['','','']
-            #     chlid_ans_list=['','','']
-            #     for ll in range(1,(len(tr)+1)):
-            #         print('ll-', ll)
-            #         text1=ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
-            #         child_text_list.append(text1)
-            #         text= ele.find_element(By.CSS_SELECTOR,"div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
-            #         chlid_ans_list.append(text)
-            #     print('steering child_text_list-', child_text_list,chlid_ans_list)
+            if 'HP Power' in [i.strip() for i in tr_text_list]:
+                for tr in tr_list:
+                    tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                    if ':' in tr_text:
+                        tr_text = tr_text[:-1]  
+                    if tr_text.strip() == 'HP Power':
+                        ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                        print('hp ans_texttype--/-', ans_text)
+                        hp_power.append(ans_text)
+            else:
+                hp_power.append('') 
 
-            #     try:
-            #         if('Type' in child_text_list):
-            #             index =  child_text_list.index('Type')
-            #             steering_type.append(chlid_ans_list[index])
-            #         else:
-            #             steering_type.append('')
-            #         if('Steering Column' in child_text_list):
-            #             index =  child_text_list.index('Steering Column')
-            #             steering_column.append(chlid_ans_list[index])
-            #         else:
-            #             steering_column.append('')
+            if 'Air Filter' in [i.strip() for i in tr_text_list]:
+                for tr in tr_list:
+                    tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                    if ':' in tr_text:
+                        tr_text = tr_text[:-1]  
+                    if tr_text.strip() == 'Air Filter':
+                        ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                        print('air ans_texttype--/-', ans_text)
+                        engine_airfilter.append(ans_text)
+            else:
+                engine_airfilter.append('')
+           
+            if 'Cutting Height Min' in [i.strip() for i in tr_text_list] or 'Cutting Height' in [i.strip() for i in tr_text_list] or 'Cutting Height (mm)' in [i.strip() for i in tr_text_list] or 'Cutting Height Range (mm)' in [i.strip() for i in tr_text_list]:
+                print('inner cutter height...')
+                for tr in tr_list:
+                    tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                    if ':' in tr_text:
+                        tr_text = tr_text[:-1]
 
-            #     except NoSuchElementException as e:
-            #         print('no steering')
-            # else:
-            #     print('else steering...')    
+                    if tr_text.strip() == 'Cutting Height Min'  or tr_text.strip() == 'Cutting Height (mm)'or tr_text.strip() == 'Cutting Height Range (mm)' or tr_text.strip() == 'Cutting Height':    
+                        ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                        print('air ans_texttype--/-', ans_text)
+                        cutter_min_height.append(ans_text)  
+            else:
+                cutter_min_height.append('')
 
-            # if 'Power Take Off' in  tab_text_list:
-            #     el_index = tab_text_list.index('Power Take Off')
-            #     print('in-', el_index)
-            #     element = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")))
-            #     element.click()
-            #     time.sleep(.5)
-            #     ele= driver.find_element(By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")     
-            #     tr=  ele.find_elements(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr")
-                
-            #     child_text_list =['','','']
-            #     chlid_ans_list=['','','']
-            #     for ll in range(1,(len(tr)+1)):
-            #         print('ll-', ll)
-            #         text1=ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
-            #         child_text_list.append(text1)
-            #         text= ele.find_element(By.CSS_SELECTOR,"div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
-            #         chlid_ans_list.append(text)
-            #     print('power child_text_list-', child_text_list)
+            if 'Cutting Height Max' in [i.strip() for i in tr_text_list]:
+                print('inner cutter height max ...')
+                for tr in tr_list:
+                    tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                    if ':' in tr_text:
+                        tr_text = tr_text[:-1]
 
-            #     try:
-            #         if('Type' in child_text_list):
-            #             index =  child_text_list.index('Type')
-            #             power_take_type.append(chlid_ans_list[index])
-            #         else:
-            #             power_take_type.append('')
+                    if tr_text.strip() == 'Cutting Height Max':    
+                        ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                        print('air ans_texttype--/-', ans_text)
+                        cutter_max_height.append(ans_text)  
+            else:
+                cutter_max_height.append('') 
 
-            #         if('RPM' in child_text_list):
-            #             index =  child_text_list.index('RPM')
-            #             power_take_rpm.append(chlid_ans_list[index])
-            #         else:
-            #             power_take_rpm.append('')
-            #     except NoSuchElementException as e:
-            #         print('no steering')
-            # else:
-            #     power_take_type.append('')
-            #     power_take_rpm.append('')
+            if 'Height Adjustment' in [i.strip() for i in tr_text_list]:
+                for tr in tr_list:
+                    tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                    if ':' in tr_text:
+                        tr_text = tr_text[:-1]
 
-            # if 'Dimensions And Weight Of Tractor' in  tab_text_list:
-            #     el_index = tab_text_list.index('Dimensions And Weight Of Tractor')
-            #     print('in-', el_index)
-            #     element = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")))
-            #     element.click()
-            #     time.sleep(.5)
-            #     ele= driver.find_element(By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")     
-            #     tr=  ele.find_elements(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr")
-            #     child_text_list =['']
-            #     chlid_ans_list=['']
-            #     for ll in range(1,(len(tr)+1)):
-            #         print('ll-', ll)
-            #         text1=ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
-            #         child_text_list.append(text1)
-            #         text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
-            #         chlid_ans_list.append(text)
-            #     print('dimension child_text_list-', child_text_list)
+                    if tr_text.strip() == 'Height Adjustment':    
+                        ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                        print('air ans_texttype--/-', ans_text)
+                        height_adj.append(ans_text) 
+            else:
+                height_adj.append('')       
 
-            #     try:
-            #         if('Total Weight' in child_text_list):
-            #             index =  child_text_list.index('Total Weight')
-            #             total_weight.append(chlid_ans_list[index])
-            #         else:
-            #             total_weight.append('')
+            if 'Reel'.capitalize() in [(i.capitalize).strip() for i in tr_text_list] or 'Reel Assembly' in [(i.capitalize).strip() for i in tr_text_list]:
+                # if 'TYPE'.capitalize() in [(i.capitalize()).strip() for i in tr_text_list]:
+                # if (parent_tr_text.capitalize()).strip() == 'Engine':
+                #     print('if Engine is parent....')
+                #     for tr in tr_list:
 
-            #         if('Wheel Base' in child_text_list):
-            #             index =  child_text_list.index('Wheel Base')
-            #             wheel_base.append(chlid_ans_list[index])
-            #         else:
-            #             wheel_base.append('')
+                #         parent_tr_index = tr_list.index(tr)
+                #         parent_tr_text=(tr_list[parent_tr_index-1].find_element(By.CSS_SELECTOR, "td:nth-child(1)").text).lstrip()
+                #         # print('parent_tr_text--',parent_tr_text)
+                #         tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                #         if ':' in tr_text:
+                #             tr_text = tr_text[:-1]
+                #         if  (parent_tr_text.capitalize()).strip() == 'Engine':   
+                #             if (tr_text.capitalize()).strip() == 'TYPE'.capitalize():
+                #                 ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                #                 print('ans_texttype--/-', ans_text)
+                #                 engine_type.append(ans_text)
 
-            #         if('Overall Length' in child_text_list):
-            #             index =  child_text_list.index('Overall Length')
-            #             overall_length.append(chlid_ans_list[index])
-            #         else:
-            #             overall_length.append('') 
+                # elif (parent_tr_text.capitalize()).strip() != 'Engine' and 'Engine'.capitalize() in [(i.capitalize()).strip() for i in tr_text_list]:
+                #     print('if Engine is not parent....')
 
-            #         if('Overall Width' in child_text_list):
-            #             index =  child_text_list.index('Overall Width')
-            #             overall_width.append(chlid_ans_list[index])
-            #         else:
-            #             overall_width.append('') 
+                for tr in tr_list:
+                    tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                    if ':' in tr_text:
+                        tr_text = tr_text[:-1]
 
-            #         if('Ground Clearance' in child_text_list):
-            #             index =  child_text_list.index('Ground Clearance')
-            #             ground_clearance.append(chlid_ans_list[index])
-            #         else:
-            #             ground_clearance.append('') 
+                    if (tr_text.capitalize()).strip() == 'Type'.capitalize():
+                        index_of = [(i.capitalize()).strip() for i in tr_text_list].index('TYPE'.capitalize())
+                        parent_tr_text=(tr_list[index_of-1].find_element(By.CSS_SELECTOR, "td:nth-child(1)").text).lstrip()
 
-            #         if('Turning Radius With Brakes' in child_text_list):
-            #             index =  child_text_list.index('Turning Radius With Brakes')
-            #             turning_radius.append(chlid_ans_list[index])
-            #         else:
-            #             turning_radius.append('') 
-            #     except NoSuchElementException as e:
-            #         print('no dimension')
-            # else:
-            #     total_weight.append('')
-            #     wheel_base.append('')
-            #     overall_length.append('')
-            #     overall_width.append('')
-            #     ground_clearance.append('')
-            #     turning_radius.append('')  
+                        if (parent_tr_text.capitalize()).strip() == 'Reel'.capitalize()
+                            try:
+                                ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                                print('ans_texttype--/-', ans_text)
+                                reel_type.append(ans_text)
+                            except NoSuchElementException as e:
+                                print('no such element--/-') 
+                                reel_type.append('') 
+            else:
+                reel_type.append('')   
+            
+            if 'Reel Diameter (mm)' in [i.strip() for i in tr_text_list]:
+                for tr in tr_list:
+                    tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                    if ':' in tr_text:
+                        tr_text = tr_text[:-1]
 
-            # if 'Hydraulics' in  tab_text_list:
-            #     el_index = tab_text_list.index('Hydraulics')
-            #     print('in-', el_index)
-            #     element = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")))
-            #     element.click()
-            #     time.sleep(.5)
-            #     ele= driver.find_element(By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")     
-            #     tr=  ele.find_elements(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr")
-            #     child_text_list =['']
-            #     chlid_ans_list=['']
-            #     for ll in range(1,(len(tr)+1)):
-            #         print('ll-', ll)
-            #         text1=ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
-            #         child_text_list.append(text1)
-            #         text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
-            #         chlid_ans_list.append(text)
-            #     print('hy child_text_list-', child_text_list)
+                    if tr_text.strip() == 'Reel Diameter (mm)':    
+                        ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                        print('air ans_texttype--/-', ans_text)
+                        reel_dia.append(ans_text) 
+            else:
+                reel_dia.append('')          
 
-            #     try:
-            #         if('Lifting Capacity' in child_text_list):
-            #             index =  child_text_list.index('Lifting Capacity')
-            #             hydraulics_cap.append(chlid_ans_list[index])
-            #         else:
-            #             hydraulics_cap.append('')
 
-            #         if('3 point Linkage' in child_text_list):
-            #             index =  child_text_list.index('3 point Linkage')
-            #             hydraulics_linkage.append(chlid_ans_list[index])
-            #         else:
-            #             hydraulics_linkage.append('')
-
-            #     except NoSuchElementException as e:
-            #         print('no hydraulics')
-            # else:
-            #     hydraulics_cap.append('') 
-            #     hydraulics_linkage.append('')
-
-            # if 'Wheels And Tyres' in  tab_text_list:
-            #     el_index = tab_text_list.index('Wheels And Tyres')
-            #     print('in-', el_index)
-            #     element = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")))
-            #     element.click()
-            #     time.sleep(.5)
-            #     ele= driver.find_element(By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")     
-            #     tr=  ele.find_elements(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr")
-            #     child_text_list =['']
-            #     chlid_ans_list=['']
-            #     for ll in range(1,(len(tr)+1)):
-            #         print('ll-', ll)
-            #         text1=ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
-            #         child_text_list.append(text1)
-            #         text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
-            #         chlid_ans_list.append(text)
-            #     print('wheel child_text_list-', child_text_list)
-
-            #     try:
-            #         if('Wheel drive' in child_text_list):
-            #             index =  child_text_list.index('Wheel drive')
-            #             wheel_drive.append(chlid_ans_list[index])   
-            #         else:
-            #             wheel_drive.append('')  
-
-            #         if('Front' in child_text_list):
-            #             index =  child_text_list.index('Front')
-            #             front_tyres.append(chlid_ans_list[index])
-            #         else:
-            #             front_tyres.append('')
-
-            #         if('Rear' in child_text_list):
-            #             index =  child_text_list.index('Rear')
-            #             rear_tyres.append(chlid_ans_list[index])
-            #         else:
-            #             rear_tyres.append('')    
-
-            #     except NoSuchElementException as e:
-            #         print('no wheel')
-            # else:
-            #     wheel_drive.append('')    
-            #     front_tyres.append('')
-            #     rear_tyres.append('')
-
-            # if 'Other Information' in  tab_text_list:
-            #     el_index = tab_text_list.index('Other Information')
-            #     print('in-', el_index)
-            #     element = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")))
-            #     element.click()
-            #     time.sleep(.5)
-            #     ele= driver.find_element(By.CSS_SELECTOR,"div.acc-container div.acc:nth-child("+str(el_index)+")")     
-            #     tr=  ele.find_elements(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr")
-            #     child_text_list =['']
-            #     chlid_ans_list=['']
-            #     for ll in range(1,(len(tr)+1)):
-            #         print('ll-', ll)
-            #         text1=ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(1)").text
-            #         child_text_list.append(text1)
-            #         text= ele.find_element(By.CSS_SELECTOR, "div.acc-content>table>tbody>tr:nth-child("+str(ll)+") td:nth-child(2)").text
-            #         chlid_ans_list.append(text)
-            #     print('other child_text_list-', child_text_list)
-
-            #     try:
-            #         if('Accessories' in child_text_list):
-            #             index =  child_text_list.index('Accessories')
-            #             accessories_list.append(chlid_ans_list[index])   
-            #         else:
-            #             accessories_list.append('') 
-
-            #         if('Additional Features' in child_text_list):
-            #             index =  child_text_list.index('Additional Features')
-            #             additional_feature.append(chlid_ans_list[index]) 
-            #         else:
-            #             additional_feature.append('') 
-
-            #         if('Warranty' in child_text_list):
-            #             index =  child_text_list.index('Warranty')
-            #             warranty_status.append(chlid_ans_list[index])
-            #         else:
-            #             warranty_status.append('')
-
-            #         if('Status' in child_text_list):
-            #             index =  child_text_list.index('Status')
-            #             status.append(chlid_ans_list[index])
-            #         else:
-            #             status.append('')        
-            #     except NoSuchElementException as e:
-            #         print('no other')
-            # else:
-            #     accessories_list.append('')
-            #     additional_feature.append('') 
-            #     warranty_status.append('')
-            #     status.append('')
-
+            print('tr_text_list- ', engine_type, engine_rpm)
+            
             # driver.back()
             time.sleep(2)
 
@@ -684,7 +510,7 @@ if buttonText == 'Load More Harvesters':
             print('TimeoutException for loop-///+++')
 
     time.sleep(1) 
-print('\n\nfeature_list.......-', feature_list, feature_ans_list)
+print('\n\engine_type.......-', engine_type)
 
 
 data_dict = {
@@ -696,6 +522,13 @@ data_dict = {
     'Power_Sorce':powersource,
     'Crop':crop,
     'About':about_list,
+    'Engine_Type':engine_type,
+    'Minimum_Cutting_Height':cutter_min_height,
+    'Maximum_Cutting_Height':cutter_max_height,
+    'Height_Adjusment':height_adj,
+    'Reel_Type':reel_type,
+    # 'No_of_Cylinder':no_of_cylinder,
+    # 'Cutter_Width':cutter_width
     # 'Gear_Box':gear_box,
     # 'Brakes':brakes,
     # 'Warranty':warranty,
@@ -704,6 +537,9 @@ data_dict = {
     # 'About':about_list,
     # 'Engine_Capacity':engine_capaity,
     'Engine_Rated_RPM':engine_rpm,
+    'Hp_Power':hp_power,
+    'Engine_Air_Filter':engine_airfilter,
+     'Reel_Type':reel_dia,
 #     'Engine_Cooling':engine_cooling,
 #     'Engine_AirFilter':engine_airfilter,
 #     'Engine_FuelPump':engine_fuelpump,
