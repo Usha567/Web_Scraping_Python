@@ -1,0 +1,22 @@
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ExcelImportController;
+use App\Http\Controllers\TractorBrandImport;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "api" middleware group. Make something great!
+|
+*/
+Route:: post('/import-excel',[ExcelImportController::class, 'import']);
+// Route::middleware('auth:sanctum')->group( function () {
+//     // return $request->user();
+// });
+Route::post('/import-brand', [TractorBrandImport::class, 'importBrand']);

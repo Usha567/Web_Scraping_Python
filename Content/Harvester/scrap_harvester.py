@@ -109,6 +109,7 @@ cutter_max_height =[]
 height_adj=[]
 reel_type=[]
 reel_dia=[]
+speed_adjustment =[]
 
 buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')
 if buttonText == 'Load More Harvesters':
@@ -465,8 +466,20 @@ if buttonText == 'Load More Harvesters':
                         print('air ans_texttype--/-', ans_text)
                         reel_dia.append(ans_text) 
             else:
-                reel_dia.append('')          
+                reel_dia.append('')    
 
+            if 'Speed Adjustment' in [i.strip() for i in tr_text_list]:
+                for tr in tr_list:
+                    tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                    if ':' in tr_text:
+                        tr_text = tr_text[:-1]
+
+                    if tr_text.strip() == 'Speed Adjustment':    
+                        ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                        print('air ans_texttype--/-', ans_text)
+                        speed_adjustment.append(ans_text)       
+            else:
+                speed_adjustment.append('')
 
             print('tr_text_list- ', engine_type, engine_rpm)
             
@@ -523,10 +536,15 @@ data_dict = {
     'Crop':crop,
     'About':about_list,
     'Engine_Type':engine_type,
+    'Engine_Rated_RPM':engine_rpm,
+    'Hp_Power':hp_power,
+    'Engine_Air_Filter':engine_airfilter,
     'Minimum_Cutting_Height':cutter_min_height,
     'Maximum_Cutting_Height':cutter_max_height,
     'Height_Adjusment':height_adj,
     'Reel_Type':reel_type,
+    'Reel_Diameter':reel_dia,
+    'Reel_Speed_Adjustment':speed_adjustment,
     # 'No_of_Cylinder':no_of_cylinder,
     # 'Cutter_Width':cutter_width
     # 'Gear_Box':gear_box,
@@ -536,10 +554,6 @@ data_dict = {
     # # 'Features':feature_list,
     # 'About':about_list,
     # 'Engine_Capacity':engine_capaity,
-    'Engine_Rated_RPM':engine_rpm,
-    'Hp_Power':hp_power,
-    'Engine_Air_Filter':engine_airfilter,
-     'Reel_Type':reel_dia,
 #     'Engine_Cooling':engine_cooling,
 #     'Engine_AirFilter':engine_airfilter,
 #     'Engine_FuelPump':engine_fuelpump,

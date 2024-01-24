@@ -100,44 +100,24 @@ buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML'
 if buttonText == 'Load More Tractors':
     print('enter if--')
     load_more = wait.until(EC.element_to_be_clickable((By.ID, "loadmorebtn")))
-    # load_more.click()
-    # print('clicked1//...')
-    # time.sleep(1)
-    # load_more.click()
+    
+    # count=0
+    # buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')
+    # while buttonText == 'Load More Tractors':
+    #     buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')    
+    #     if buttonText != 'Load More Tractors':
+    #         break
+    #     else:  
+    #         try:
+    #             count +=1
+    #             print('count-', count)
+    #             load_more = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "loadmorebtn")))
+    #             driver.execute_script("arguments[0].click();", load_more)
+    #             print('clicked on load') 
+    #         except TimeoutException as e:
+    #             print('TimeoutException for load more..')     
+    # print('click3',count)
 
-    # time.sleep(1)
-    # load_more.click()
-    # time.sleep(1)
-    # load_more.click()
-    # time.sleep(1)
-    # load_more.click()
-    # time.sleep(1)
-    # load_more.click()
-    # time.sleep(1)
-    # load_more.click()
-    # time.sleep(1)
-    # load_more.click()
-    # time.sleep(1)
-    # load_more.click()
-    count=0
-    buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')
-    while buttonText == 'Load More Tractors':
-        buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')    
-        if buttonText != 'Load More Tractors':
-            break
-        else:  
-            try:
-                count +=1
-                print('count-', count)
-                load_more = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "loadmorebtn")))
-                driver.execute_script("arguments[0].click();", load_more)
-                print('clicked on load') 
-            except TimeoutException as e:
-                print('TimeoutException for load more..')     
-    print('click3',count)
-
-    # 200-400
-    #322  stuck on 
     for i in range(680, 690):
         print('looping start...i-', i)
 
@@ -695,48 +675,6 @@ if buttonText == 'Load More Tractors':
 print('brand_list-', brand_list, model_list,cylinder)
 data_dict = {
     'Brand':brand_list,
-    'Model':model_list,
-    'No_of_Cylinder':cylinder,
-    'HP_Category':hp_category,
-    'PTO_HP':pto_hp,
-    'Gear_Box':gear_box,
-    'Brakes':brakes,
-    'Warranty':warranty,
-    'Price':price,
-    # 'Features':feature_list,
-    'About':about_list,
-    'Engine_Capacity':engine_capaity,
-    'Engine_RPM':engine_rpm,
-    'Engine_Cooling':engine_cooling,
-    'Engine_AirFilter':engine_airfilter,
-    'Engine_FuelPump':engine_fuelpump,
-    'Engine_Torque':engine_torque,
-    'Transmission_Type':transmission_type,
-    'Transmission_Clutch':transmission_clutch,
-    'Transmission_Gear_Box':transmission_gear,
-    'Transmission_Battery':transmission_battery,
-    'Transmission_Alternator':transmission_alternator,
-    'Transmission_Forward_Speed':transmission_fspeed,
-    'Transmission_Reverse_Speed':transmission_rspeed,
-    'Steering_type':steering_type,
-    'Steering_Column':steering_column,
-    'Power_Take_Off_Type':power_take_type,
-    'Power_Take_Off_RPM':power_take_rpm,
-    'Total_Weight':total_weight,
-    'Wheel_Base':wheel_base,
-    'Overall_Length':overall_length,
-    'Overall_Width':overall_width,
-    'Ground_Clearance':ground_clearance,
-    'Turning_Radius':turning_radius,
-    'Hydraulics_Lifting_Capacity':hydraulics_cap,
-    'Hydraulics_Linkage':hydraulics_linkage,
-    'Wheel_Drive':wheel_drive,
-    'Front_Tyres':front_tyres,
-    'Rear_Tyres':rear_tyres,
-    'Accessories':accessories_list,
-    'Additional_Feature':additional_feature,
-    'Warranty_status':warranty_status,
-    'Status':status
 }
 df=pd.DataFrame.from_dict(data_dict, orient="index")
 df= df.transpose()
