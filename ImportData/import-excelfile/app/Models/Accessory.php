@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Accessory extends Model
 {
     use HasFactory;
+    protected $fillable =['accessory'];
 }

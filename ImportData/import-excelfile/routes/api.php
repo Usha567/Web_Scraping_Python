@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\TractorBrandImport;
+use App\Http\Controllers\ImportTractorDetails;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,4 @@ Route:: post('/import-excel',[ExcelImportController::class, 'import']);
 //     // return $request->user();
 // });
 Route::post('/import-brand', [TractorBrandImport::class, 'importBrand']);
+Route::post('/import-tractor', [ImportTractorDetails::class, 'importTractor']);

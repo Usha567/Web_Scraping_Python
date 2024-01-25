@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Accessory_mapping extends Model
 {
     use HasFactory;
+    protected $fillable =['product_id', 'accessory_id'];
 }
