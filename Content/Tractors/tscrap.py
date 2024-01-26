@@ -139,7 +139,7 @@ if buttonText == 'Load More Tractors':
 
    #100-180
 #    122
-    for i in range(690,700):
+    for i in range(1,6):
         print('looping start...i-', i)
 
         try:

@@ -110,6 +110,7 @@ height_adj=[]
 reel_type=[]
 reel_dia=[]
 speed_adjustment =[]
+images_name=[]
 
 buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')
 if buttonText == 'Load More Harvesters':
@@ -164,6 +165,31 @@ if buttonText == 'Load More Harvesters':
             model_name_ = driver.find_element(By.CSS_SELECTOR, 
             "div.product-single-top>div.section-heading>h1").text
             model_name.append(model_name_)
+
+              # image_list
+            tractor_images = driver.find_elements(By.CSS_SELECTOR, "div.slider div.slick-list div.slick-track div.slick-slide>img")
+            src =[]
+
+            for img in tractor_images:
+                if len(src) < 4:
+                    src.append(img.get_attribute('src'))
+            # image_list.append(src)
+
+            dirname = (((brand.split('Tractors')[0]).capitalize()).strip())+str(i)+"_"+model
+            print('dirname-', dirname)
+            os.mkdir(dirname) 
+
+            imagename_list=[]
+            for i in range((len(src))):
+                if(src[i] != ''):
+                    path = urlparse(src[i]).path
+                    extension = os.path.splitext(path)[1]
+                    name = os.path.splitext(path)[0]
+                    img_name = "img"+str(i)+"-"+name[name.rfind("/") + 1:]
+                    imagename_list.append(img_name+'.png'.format(i))
+                    urllib.request.urlretrieve(str(src[i]), dirname+"/"+img_name+'.png'.format(i))
+        
+            images_name.append(imagename_list)
 
 
             feature = driver.find_elements(By.CSS_SELECTOR, "div.product-single-features-inner")
@@ -529,6 +555,7 @@ print('\n\engine_type.......-', engine_type)
 data_dict = {
     'Brand':brand_list,
     'Model':model_list,
+    'images_name':images_name,
     'Power':power,
     'Cutter_Width':cutterwidth,
     'No_of_Cylinder':cylinder,
