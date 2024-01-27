@@ -2,6 +2,8 @@ import time
 import urllib
 import os
 import re
+from rembg import remove 
+from PIL import Image , ImageFont, ImageDraw
 from urllib.parse import urlparse
 import xlsxwriter
 import pandas as pd
@@ -120,21 +122,19 @@ if buttonText == 'Load More Tractors':
                 print('TimeoutException for load more..')
     print('click3',count)
 
-   #100-180
-#    122
-    for i in range(50,100):
+    for i in range(1,2):
         print('looping start...i-', i)
 
         try:
             try:
                 print('click on image..///')
-                new_tractor = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,
+                new_tractor = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR,
                 "div#tractorMoreData div:nth-child("+str(i)+")>div.new-tractor-main>div.new-tractor-img>a>img")))
                 new_tractor.click()
                 time.sleep(2)
 
-                modal=WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
-                close_modal= WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
+                modal=WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
+                close_modal= WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
                 close_modal.click()
             except TimeoutException as e:
                 print('TimeoutException for close btn..///..//')   
@@ -155,11 +155,14 @@ if buttonText == 'Load More Tractors':
             src =[]
 
             for img in tractor_images:
-                if len(src) < 4:
-                    src.append(img.get_attribute('src'))
+                if img not in src:
+                    if len(src) < 4:
+                        src.append(img.get_attribute('src'))
             image_list.append(src)
 
-            dirname = (((brand.split('Tractors')[0]).capitalize()).strip())+"_"+str(i)+"_"+model
+            print('src//- ', src)
+
+            dirname = "Tractors_Images/"+(((brand.split('Tractors')[0]).capitalize()).strip())+"_"+"_"+str(i)+"_"+model
             print('dirname-', dirname)
             os.mkdir(dirname) 
 
@@ -172,7 +175,43 @@ if buttonText == 'Load More Tractors':
                     img_name = "img"+str(i)+"-"+name[name.rfind("/") + 1:]
                     imagename_list.append(img_name+'.png'.format(i))
                     urllib.request.urlretrieve(str(src[i]), dirname+"/"+img_name+'.png'.format(i))
-        
+            
+             
+            files = os.listdir(dirname)
+            for file in files:
+                print('file-',file)
+                im = Image.open(os.path.join(dirname+"/", file))
+                output_path = dirname+"/"+file 
+
+                output = remove(im,  bgcolor=(255, 255, 255, 255)) 
+                output.save(output_path, quality=95) 
+
+            print('dirname/', dirname)
+            rem_bgfiles = os.listdir(dirname)
+            for file in rem_bgfiles:
+                print('file///-', file)
+                with Image.open(dirname+"/"+file) as img:
+                    width, height = img.size
+                    txt = Image.new("RGBA", img.size, (255, 255, 255, 0))
+                    
+                    d = ImageDraw.Draw(txt)
+                    _, _, w, h = d.textbbox((0, 0), "Bharat Agrimart")
+                    fontsize = 1
+
+                    img_fraction = 0.25
+                    font = ImageFont.truetype("arial.ttf", fontsize)
+                    while d.textbbox((0, 0), "Bharat Agrimart", font=font)[2] < img_fraction * width:
+                        fontsize += 1
+                        font = ImageFont.truetype("arial.ttf", fontsize)
+                    fontsize -= 1
+                    font = ImageFont.truetype("arialbi.ttf", fontsize)
+
+                    d.text(((width/2+120),(height-h-30)), "Bharat Agrimart",font=font, fill=(0, 0, 0, 255))
+                    
+                    out = Image.alpha_composite(img.convert("RGBA"), txt)
+                    output_path = dirname+"/"+file
+                    out.save(output_path)
+
             images_name.append(imagename_list)
             # driver.back()
             time.sleep(2)
@@ -187,11 +226,11 @@ if buttonText == 'Load More Tractors':
 
             try:
                 print('load_more_again..')
-                close_modal= WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
+                close_modal= WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
                 close_modal.click()
                 time.sleep(2)
 
-                load_more = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "loadmorebtn")))
+                load_more = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "loadmorebtn")))
                 buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')
                 while buttonText == 'Load More Tractors':
                     buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')    
