@@ -122,9 +122,8 @@ if buttonText == 'Load More Tractors':
                 print('TimeoutException for load more..')
     print('click3',count)
 
-    for i in range(1,2):
+    for i in range(15,30):
         print('looping start...i-', i)
-
         try:
             try:
                 print('click on image..///')
@@ -162,7 +161,7 @@ if buttonText == 'Load More Tractors':
 
             print('src//- ', src)
 
-            dirname = "Tractors_Images/"+(((brand.split('Tractors')[0]).capitalize()).strip())+"_"+"_"+str(i)+"_"+model
+            dirname = "Tractors_Images/"+(((brand.split('Tractors')[0]).capitalize()).strip())+"_"+str(i)+"_"+model
             print('dirname-', dirname)
             os.mkdir(dirname) 
 
@@ -195,18 +194,26 @@ if buttonText == 'Load More Tractors':
                     txt = Image.new("RGBA", img.size, (255, 255, 255, 0))
                     
                     d = ImageDraw.Draw(txt)
-                    _, _, w, h = d.textbbox((0, 0), "Bharat Agrimart")
+                    _, _, w, h = d.textbbox((0, 0), "Bharatagrimart")
                     fontsize = 1
 
                     img_fraction = 0.25
-                    font = ImageFont.truetype("arial.ttf", fontsize)
-                    while d.textbbox((0, 0), "Bharat Agrimart", font=font)[2] < img_fraction * width:
+                    font = ImageFont.truetype("BerkshireSwash-Regular.ttf", fontsize)
+                    while d.textbbox((0, 0), "Bharatagrimart", font=font)[2] < img_fraction * width:
                         fontsize += 1
-                        font = ImageFont.truetype("arial.ttf", fontsize)
+                        font = ImageFont.truetype("BerkshireSwash-Regular.ttf", fontsize)
                     fontsize -= 1
-                    font = ImageFont.truetype("arialbi.ttf", fontsize)
-
-                    d.text(((width/2+120),(height-h-30)), "Bharat Agrimart",font=font, fill=(0, 0, 0, 255))
+                    font = ImageFont.truetype("BerkshireSwash-Regular.ttf", fontsize)
+                    print('width-',width, height, w,h) 
+                    if(width > 450 and height>180):
+                        print('if...')
+                        d.text(((width/2+157),(height-h-12)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
+                    elif(width==320 and height==180):
+                        print('elif...')
+                        d.text(((width/2+(w*1.20)),(height/2+(height/3)+h*1.3)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
+                    else:
+                        print('else//..')
+                        d.text(((width/2+112),(height-h-10)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
                     
                     out = Image.alpha_composite(img.convert("RGBA"), txt)
                     output_path = dirname+"/"+file
@@ -264,7 +271,7 @@ data_dict = {
 df=pd.DataFrame.from_dict(data_dict, orient="index")
 df= df.transpose()
 
-writer = pd.ExcelWriter('Tractor_Image_Infos.xlsx', engine='xlsxwriter')
+writer = pd.ExcelWriter('Tractor_Image_Infos1.xlsx', engine='xlsxwriter')
 df.to_excel(writer, sheet_name='Sheet1', index=False,startrow=1, header=False)
 workbook=writer.book
 worksheet = writer.sheets['Sheet1']

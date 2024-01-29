@@ -2,14 +2,14 @@ from rembg import remove
 from PIL import Image 
 import os
   
-files = os.listdir('D:/PYTHON_WEB_SCRAPING/GithubCloned/Web_Scraping_Python/Content/Tractors\Mahindra_27_ARJUN NOVO 605 DI–i-4WD/')
+files = os.listdir('D:/PYTHON_WEB_SCRAPING/GithubCloned/Web_Scraping_Python/Content/Tractors/wimg/')
 for file in files:
     print('file-',file)
-    im = Image.open(os.path.join('D:/PYTHON_WEB_SCRAPING/GithubCloned/Web_Scraping_Python/Content/Tractors/Mahindra_27_ARJUN NOVO 605 DI–i-4WD/', file))
-    output_path = 'D:/PYTHON_WEB_SCRAPING/GithubCloned/Web_Scraping_Python/Content/Tractors/Mahindra_usha2/'+file 
+    im = Image.open(os.path.join('D:/PYTHON_WEB_SCRAPING/GithubCloned/Web_Scraping_Python/Content/Tractors/wimg/', file))
+    output_path = 'D:/PYTHON_WEB_SCRAPING/GithubCloned/Web_Scraping_Python/Content/Tractors/addwusha/'+file 
 
     # Removing the background from the given Image 
-    output = remove(im,  bgcolor=(0, 0, 0, 3)) 
+    output = remove(im,  bgcolor=(255, 255, 255, 255)) 
     
     #Saving the image in the given path 
     output.save(output_path, quality=95) 

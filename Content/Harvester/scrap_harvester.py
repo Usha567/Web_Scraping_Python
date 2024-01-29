@@ -106,11 +106,18 @@ engine_type=[]
 cutter_width = []
 cutter_min_height =[]
 cutter_max_height =[]
-height_adj=[]
+cutter_height_adj=[]
+reel_height_adj = []
 reel_type=[]
 reel_dia=[]
 speed_adjustment =[]
 images_name=[]
+image_list=[]
+cooling_sys=[]
+cooling_cap=[]
+threshing_width=[]
+threshing_length=[]
+threshing_diameter=[]
 
 buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')
 if buttonText == 'Load More Harvesters':
@@ -140,7 +147,6 @@ if buttonText == 'Load More Harvesters':
 
         try:
             try:
-       
                 print('click on image..///')
                 new_harvester = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div#harvesterMoreData div:nth-child("+str(i)+")>div.implement-main>div.implement-img>a>img")))
                 new_harvester.click()
@@ -166,16 +172,17 @@ if buttonText == 'Load More Harvesters':
             "div.product-single-top>div.section-heading>h1").text
             model_name.append(model_name_)
 
-              # image_list
+            # image_list
             tractor_images = driver.find_elements(By.CSS_SELECTOR, "div.slider div.slick-list div.slick-track div.slick-slide>img")
             src =[]
 
             for img in tractor_images:
-                if len(src) < 4:
-                    src.append(img.get_attribute('src'))
-            # image_list.append(src)
+                if img not in src:
+                    if len(src) < 4:
+                        src.append(img.get_attribute('src'))
+            image_list.append(src)
 
-            dirname = (((brand.split('Tractors')[0]).capitalize()).strip())+str(i)+"_"+model
+            dirname = ((brand.capitalize()).strip())+str(i)+"_"+model
             print('dirname-', dirname)
             os.mkdir(dirname) 
 
@@ -188,7 +195,49 @@ if buttonText == 'Load More Harvesters':
                     img_name = "img"+str(i)+"-"+name[name.rfind("/") + 1:]
                     imagename_list.append(img_name+'.png'.format(i))
                     urllib.request.urlretrieve(str(src[i]), dirname+"/"+img_name+'.png'.format(i))
-        
+            
+                 
+            files = os.listdir(dirname)
+            for file in files:
+                print('file-',file)
+                im = Image.open(os.path.join(dirname+"/", file))
+                output_path = dirname+"/"+file 
+
+                output = remove(im,  bgcolor=(255, 255, 255, 255)) 
+                output.save(output_path, quality=95) 
+
+            print('dirname/', dirname)
+            rem_bgfiles = os.listdir(dirname)
+            for file in rem_bgfiles:
+                print('file///-', file)
+                with Image.open(dirname+"/"+file) as img:
+                    width, height = img.size
+                    txt = Image.new("RGBA", img.size, (255, 255, 255, 0))
+                    
+                    d = ImageDraw.Draw(txt)
+                    _, _, w, h = d.textbbox((0, 0), "Bharatagrimart")
+                    fontsize = 1
+
+                    img_fraction = 0.25
+                    font = ImageFont.truetype("BerkshireSwash-Regular.ttf", fontsize)
+                    while d.textbbox((0, 0), "Bharatagrimart", font=font)[2] < img_fraction * width:
+                        fontsize += 1
+                        font = ImageFont.truetype("BerkshireSwash-Regular.ttf", fontsize)
+                    fontsize -= 1
+                    font = ImageFont.truetype("BerkshireSwash-Regular.ttf", fontsize)
+                    print('width-',width, height, w,h) 
+                    if(width > 320 and height>180):
+                        d.text(((width/2+158),(height-h-15)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
+                    
+                    elif(320<width<600 and 180<height<350):
+                        d.text(((width/2+130),(height-h-10)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
+                    else:
+                        d.text(((width/2+(w*1.20)),(height/2+(height/3)+h*1.3)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
+    
+                    out = Image.alpha_composite(img.convert("RGBA"), txt)
+                    output_path = dirname+"/"+file
+                    out.save(output_path)
+
             images_name.append(imagename_list)
 
 
@@ -256,49 +305,7 @@ if buttonText == 'Load More Harvesters':
                     tr_text_list.append(text)
 
             print('tr_text_list-', tr_text_list)    
-
-            # for tr in tr_list:
-            #     tr_text = tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")
-            #     text = (tr_text.text).lstrip()
-
-            #     print('text--// ', text)
-
-            #     zero_index_tr_text = parent_tr_text=(tr_list[0].find_element(By.CSS_SELECTOR, "td:nth-child(1)").text).lstrip()
-            #     parent_tr_index = tr_list.index(tr)
-            #     parent_tr_text=(tr_list[parent_tr_index-1].find_element(By.CSS_SELECTOR, "td:nth-child(1)").text).lstrip()
-            #     # print('parent_tr_text--',parent_tr_text, zero_index_tr_text)
-
-            #     try:
-            #         print('enter try-', 'Engine'.capitalize() == (text.capitalize()).strip() and (parent_tr_text).strip() == (zero_index_tr_text).strip())
-            #         if 'TYPE'.capitalize() in [i.capitalize() for i in tr_text_list] and 'TYPE'.capitalize() == (text.capitalize()).strip() and (parent_tr_text).strip()=='Engine':
-            #             ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
-            #             print('ans_texttype--/-', ans_text)
-            #             engine_type.append(ans_text)
-
-            #         if 'Engine'.capitalize() == (text.capitalize()).strip() and (parent_tr_text).strip() == (zero_index_tr_text).strip():
-            #             if 'TYPE'.capitalize() not in [k.capitalize() for k in tr_text_list]:  
-            #                 ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
-            #                 print('not type ans_text entinetype--/-', ans_text)
-            #                 engine_type.append(ans_text)
-            #             else:
-            #                 print('elsse')
-            #                 if 'TYPE'.capitalize() in [i.capitalize() for i in tr_text_list] and 'Engine'.capitalize() in [j.capitalize() for j in tr_text_list] and (parent_tr_text).strip()=='Engine':
-            #                     print('Type already Present///')
-            #                 elif 'TYPE'.capitalize() in [i.capitalize() for i in tr_text_list] and 'Engine'.capitalize() in [j.capitalize() for j in tr_text_list] and (parent_tr_text).strip() !='Engine':
-            #                     try:
-            #                         ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
-            #                         print('ans_text entinetype--/-', ans_text)
-            #                         engine_type.append(ans_text) 
-            #                     except NoSuchElementException as e:
-            #                         engine_type.append('')
-            #                         print('No such element+++++++') 
-            #                 else:    
-            #                     engine_type.append('')
-                                    
-
-            #     except NoSuchElementException as e:
-            #         print('No such element...')                
-            
+             
             if 'TYPE'.capitalize() in [(i.capitalize()).strip() for i in tr_text_list]:
                 print('Type in tr_text_list')
                 index_of = [(i.capitalize()).strip() for i in tr_text_list].index('TYPE'.capitalize())
@@ -433,14 +440,18 @@ if buttonText == 'Load More Harvesters':
                     if ':' in tr_text:
                         tr_text = tr_text[:-1]
 
-                    if tr_text.strip() == 'Height Adjustment':    
-                        ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
-                        print('air ans_texttype--/-', ans_text)
-                        height_adj.append(ans_text) 
+                    if tr_text.strip() == 'Height Adjustment': 
+                        parent_tr_index = tr_list.index(tr)
+                        parent_tr_text=(tr_list[parent_tr_index-1].find_element(By.CSS_SELECTOR, 
+                           "td:nth-child(1)").text).lstrip()
+                        if 'Cutter' in (parent_tr_text.capitalize()).strip():
+                            ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                            print('air ans_texttype--/-', ans_text)
+                            cutter_height_adj.append(ans_text) 
             else:
-                height_adj.append('')       
+                cutter_height_adj.append('')       
 
-            if 'Reel'.capitalize() in [(i.capitalize).strip() for i in tr_text_list] or 'Reel Assembly' in [(i.capitalize).strip() for i in tr_text_list]:
+            if 'Reel'.capitalize() in [(i.capitalize()).strip() for i in tr_text_list] or 'Reel Assembly' in [(i.capitalize()).strip() for i in tr_text_list]:
                 # if 'TYPE'.capitalize() in [(i.capitalize()).strip() for i in tr_text_list]:
                 # if (parent_tr_text.capitalize()).strip() == 'Engine':
                 #     print('if Engine is parent....')
@@ -470,7 +481,7 @@ if buttonText == 'Load More Harvesters':
                         index_of = [(i.capitalize()).strip() for i in tr_text_list].index('TYPE'.capitalize())
                         parent_tr_text=(tr_list[index_of-1].find_element(By.CSS_SELECTOR, "td:nth-child(1)").text).lstrip()
 
-                        if (parent_tr_text.capitalize()).strip() == 'Reel'.capitalize()
+                        if (parent_tr_text.capitalize()).strip() == 'Reel'.capitalize():
                             try:
                                 ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
                                 print('ans_texttype--/-', ans_text)
@@ -506,6 +517,92 @@ if buttonText == 'Load More Harvesters':
                         speed_adjustment.append(ans_text)       
             else:
                 speed_adjustment.append('')
+
+            if 'Height Adjustment' in [i.strip() for i in tr_text_list]:
+                for tr in tr_list:
+                    tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                    if ':' in tr_text:
+                        tr_text = tr_text[:-1]
+
+                    if tr_text.strip() == 'Height Adjustment': 
+                        parent_tr_index = tr_list.index(tr)
+                        parent_tr_text=(tr_list[parent_tr_index-1].find_element(By.CSS_SELECTOR, 
+                           "td:nth-child(1)").text).lstrip()
+                        if 'Reel' in (parent_tr_text.capitalize()).strip():
+                            ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                            print('air ans_texttype--/-', ans_text)
+                            reel_height_adj.append(ans_text) 
+            else:
+                reel_height_adj.append('')
+
+            if 'Cooling System' in [i.strip() for i in tr_text_list]:
+                for tr in tr_list:
+                    tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                    if ':' in tr_text:
+                        tr_text = tr_text[:-1]
+                    if tr_text.strip() == 'Cooling System': 
+                        ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                        print('air ans_texttype--/-', ans_text)
+                        cooling_sys.append(ans_text) 
+            else:
+                cooling_sys.append('') 
+
+            if 'Coolant Capacity' in [i.strip() for i in tr_text_list]:
+                for tr in tr_list:
+                    tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                    if ':' in tr_text:
+                        tr_text = tr_text[:-1]
+                    if tr_text.strip() == 'Coolant Capacity': 
+                        ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                        print('air ans_texttype--/-', ans_text)
+                        cooling_cap.append(ans_text) 
+            else:
+                cooling_cap.append('')
+
+            if 'Width (mm)' in [i.strip() for i in tr_text_list] or
+             'SieveCase Length x Width (mm)' in [i.strip() for i in tr_text_list] or
+              'Threshing Drum Width' in [i.strip() for i in tr_text_list] or
+              'Drum Width' in [i.strip() for i in tr_text_list]:
+                for tr in tr_list:
+                    tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                    if ':' in tr_text:
+                        tr_text = tr_text[:-1]
+                    if tr_text.strip() == 'Width (mm)' or 
+                    tr_text.strip() == 'SieveCase Length x Width (mm)' or 
+                    tr_text.strip() == 'Threshing Drum Width' or 
+                    tr_text.strip() == 'Drum Width': 
+                        ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                        print('air ans_texttype--/-', ans_text)
+                        threshing_width.append(ans_text) 
+            else:
+                threshing_width.append('')     
+
+            if 'Length of Drum' in [i.strip() for i in tr_text_list]:
+                for tr in tr_list:
+                    tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                    if ':' in tr_text:
+                        tr_text = tr_text[:-1]
+                    if tr_text.strip() == 'Length of Drum': 
+                        ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                        print('air ans_texttype--/-', ans_text)
+                        threshing_length.append(ans_text) 
+            else:
+                threshing_length.append('')   
+
+            
+            if 'Drum Diameter' in [i.strip() for i in tr_text_list] or 
+            'Dia of Drum' in [i.strip() for i in tr_text_list] or 
+            'Diameter of Thresher Drum (mm)' in [i.strip() for i in tr_text_list]:
+                for tr in tr_list:
+                    tr_text = ((tr.find_element(By.CSS_SELECTOR, "td:nth-child(1)")).text).lstrip()
+                    if ':' in tr_text:
+                        tr_text = tr_text[:-1]
+                    if tr_text.strip() == 'Drum Diameter' or tr_text.strip() == 'Dia of Drum' or tr_text.strip() == 'Diameter of Thresher Drum (mm)': 
+                        ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                        print('air ans_texttype--/-', ans_text)
+                        threshing_diameter.append(ans_text) 
+            else:
+                threshing_diameter.append('')                   
 
             print('tr_text_list- ', engine_type, engine_rpm)
             
@@ -568,10 +665,16 @@ data_dict = {
     'Engine_Air_Filter':engine_airfilter,
     'Minimum_Cutting_Height':cutter_min_height,
     'Maximum_Cutting_Height':cutter_max_height,
-    'Height_Adjusment':height_adj,
+    'Cutter_Height_Adjusment':cutter_height_adj,
     'Reel_Type':reel_type,
     'Reel_Diameter':reel_dia,
     'Reel_Speed_Adjustment':speed_adjustment,
+    'Reel_Height_Adjusment':reel_height_adj,
+    'Cooling_System':cooling_sys,
+    'Colling_Cap':cooling_cap,
+    'Threshing_Width':threshing_width,
+    'Threshing_Length':threshing_length,
+    'Threshing_Diameter':threshing_diameter,
     # 'No_of_Cylinder':no_of_cylinder,
     # 'Cutter_Width':cutter_width
     # 'Gear_Box':gear_box,

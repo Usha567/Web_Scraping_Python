@@ -2,6 +2,8 @@ import time
 import urllib
 import os
 import re
+from rembg import remove 
+from PIL import Image , ImageFont, ImageDraw
 from urllib.parse import urlparse
 import xlsxwriter
 import pandas as pd
@@ -122,7 +124,7 @@ if buttonText == 'Load More Tractors':
 
    #100-180
 #    122
-    for i in range(20,50):
+    for i in range(15,30):
         print('looping start...i-', i)
 
         try:
@@ -159,7 +161,7 @@ if buttonText == 'Load More Tractors':
                     src.append(img.get_attribute('src'))
             image_list.append(src)
 
-            dirname = (((brand.split('Tractors')[0]).capitalize()).strip())+"_"+str(i)+"_"+model
+            dirname = "Tractors_Images/"+(((brand.split('Tractors')[0]).capitalize()).strip())+"_"+str(i)+"_"+model
             print('dirname-', dirname)
             os.mkdir(dirname) 
 
@@ -172,7 +174,51 @@ if buttonText == 'Load More Tractors':
                     img_name = "img"+str(i)+"-"+name[name.rfind("/") + 1:]
                     imagename_list.append(img_name+'.png'.format(i))
                     urllib.request.urlretrieve(str(src[i]), dirname+"/"+img_name+'.png'.format(i))
-        
+            
+            files = os.listdir(dirname)
+            for file in files:
+                print('file-',file)
+                im = Image.open(os.path.join(dirname+"/", file))
+                output_path = dirname+"/"+file 
+
+                output = remove(im,  bgcolor=(255, 255, 255, 255)) 
+                output.save(output_path, quality=95)
+
+            print('dirname/', dirname)
+            rem_bgfiles = os.listdir(dirname)
+            for file in rem_bgfiles:
+                print('file///-', file)
+                with Image.open(dirname+"/"+file) as img:
+                    width, height = img.size
+                    txt = Image.new("RGBA", img.size, (255, 255, 255, 0))
+                    
+                    d = ImageDraw.Draw(txt)
+                    _, _, w, h = d.textbbox((0, 0), "Bharatagrimart")
+                    fontsize = 1
+
+                    img_fraction = 0.25
+                    font = ImageFont.truetype("BerkshireSwash-Regular.ttf", fontsize)
+                    while d.textbbox((0, 0), "Bharatagrimart", font=font)[2] < img_fraction * width:
+                        fontsize += 1
+                        font = ImageFont.truetype("BerkshireSwash-Regular.ttf", fontsize)
+                    fontsize -= 1
+                    font = ImageFont.truetype("BerkshireSwash-Regular.ttf", fontsize)
+                    print('width-',width, height, w,h) 
+                    
+                    if(width > 450 and height>180):
+                        print('if...')
+                        d.text(((width/2+157),(height-h-12)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
+                    elif(width==320 and height==180):
+                        print('elif...')
+                        d.text(((width/2+(w*1.20)),(height/2+(height/3)+h*1.3)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
+                    else:
+                        print('else//..')
+                        d.text(((width/2+112),(height-h-10)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
+                    
+                    out = Image.alpha_composite(img.convert("RGBA"), txt)
+                    output_path = dirname+"/"+file
+                    out.save(output_path)
+                    
             images_name.append(imagename_list)
             # driver.back()
             time.sleep(2)
