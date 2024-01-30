@@ -1,6 +1,7 @@
 import time
 import urllib
 import os
+import errno
 import re
 from rembg import remove 
 from PIL import Image , ImageFont, ImageDraw
@@ -122,9 +123,9 @@ if buttonText == 'Load More Tractors':
                 print('TimeoutException for load more..')
     print('click3',count)
 
-   #100-180
-#    122
-    for i in range(15,30):
+    # 140-150 left
+    # Need to run this loop again file name is same 
+    for i in range(700,770):
         print('looping start...i-', i)
 
         try:
@@ -163,8 +164,13 @@ if buttonText == 'Load More Tractors':
 
             dirname = "Tractors_Images/"+(((brand.split('Tractors')[0]).capitalize()).strip())+"_"+str(i)+"_"+model
             print('dirname-', dirname)
-            os.mkdir(dirname) 
-
+            try:
+                os.mkdir(dirname)
+            except OSError as e:
+                if e.errno == errno.EEXIST:
+                    print('Dir not created')
+                else:
+                    raise
             imagename_list=[]
             for i in range((len(src))):
                 if(src[i] != ''):
@@ -271,7 +277,7 @@ data_dict = {
 df=pd.DataFrame.from_dict(data_dict, orient="index")
 df= df.transpose()
 
-writer = pd.ExcelWriter('Tractor_Image_Infos2.xlsx', engine='xlsxwriter')
+writer = pd.ExcelWriter('Tractor_Image_Infos222222.xlsx', engine='xlsxwriter')
 df.to_excel(writer, sheet_name='Sheet1', index=False,startrow=1, header=False)
 workbook=writer.book
 worksheet = writer.sheets['Sheet1']

@@ -1,6 +1,7 @@
 import time
 import urllib
 import os
+import errno
 import re
 from rembg import remove 
 from PIL import Image , ImageFont, ImageDraw
@@ -121,8 +122,11 @@ if buttonText == 'Load More Tractors':
             except TimeoutException as e:
                 print('TimeoutException for load more..')
     print('click3',count)
+    
+    # 150-160 pending - till 300, 253-300 need to run again
+    # Need to run 250-300 data tomorrow file name is also chnaged
 
-    for i in range(15,30):
+    for i in range(250,300):
         print('looping start...i-', i)
         try:
             try:
@@ -160,10 +164,21 @@ if buttonText == 'Load More Tractors':
             image_list.append(src)
 
             print('src//- ', src)
-
-            dirname = "Tractors_Images/"+(((brand.split('Tractors')[0]).capitalize()).strip())+"_"+str(i)+"_"+model
-            print('dirname-', dirname)
-            os.mkdir(dirname) 
+            
+            if '/' in model:
+                m= model.split('/')
+                dirname = "Tractors_Images/"+(((brand.split('Tractors')[0]).capitalize()).strip())+"_"+str(i)+"_"+m[0]+"_"+m[1]
+                print('dirname-', dirname)
+            else:
+                dirname = "Tractors_Images/"+(((brand.split('Tractors')[0]).capitalize()).strip())+"_"+str(i)+"_"+model
+                print('dirname-', dirname)     
+            try:
+                os.mkdir(dirname)
+            except OSError as e:
+                if e.errno == errno.EEXIST:
+                    print('Dir not created')
+                else:
+                    os.mkdir(dirname)
 
             imagename_list=[]
             for i in range((len(src))):
@@ -271,7 +286,7 @@ data_dict = {
 df=pd.DataFrame.from_dict(data_dict, orient="index")
 df= df.transpose()
 
-writer = pd.ExcelWriter('Tractor_Image_Infos1.xlsx', engine='xlsxwriter')
+writer = pd.ExcelWriter('Tractor_Image_Infos11111.xlsx', engine='xlsxwriter')
 df.to_excel(writer, sheet_name='Sheet1', index=False,startrow=1, header=False)
 workbook=writer.book
 worksheet = writer.sheets['Sheet1']
