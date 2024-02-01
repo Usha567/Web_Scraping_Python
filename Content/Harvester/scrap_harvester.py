@@ -114,6 +114,8 @@ reel_height_adj = []
 reel_type=[]
 reel_dia=[]
 speed_adjustment =[]
+max_revolution=[]
+min_revolution=[]
 images_name=[]
 image_list=[]
 cooling_sys=[]
@@ -961,12 +963,16 @@ if buttonText == 'Load More Harvesters':
                                 dimensions_width.append('')            
                     else:
                         if tr_text.strip() == 'Width':
-                            index_of = [(i.capitalize()).strip() for i in tr_text_list_withcolon].index('Width:'.capitalize())
-                            parent_tr_text=(tr_list[index_of-1].find_element(By.CSS_SELECTOR, "td:nth-child(1)").text).lstrip()
-                        
-                            print('dimension w parent_tr_text-', parent_tr_text)
-                            parent_tr_text_splitted = parent_tr_text.split()
-                            if 'Cutter' in parent_tr_text_splitted :
+                            try:                               
+                                index_of = [(i.capitalize()).strip() for i in tr_text_list_withcolon].index('Width:'.capitalize())
+                                parent_tr_text=(tr_list[index_of-1].find_element(By.CSS_SELECTOR, "td:nth-child(1)").text).lstrip()
+                            
+                                print('dimension w parent_tr_text-', parent_tr_text)
+                                parent_tr_text_splitted = parent_tr_text.split()
+                            except Exception as e:
+                                print('exception....')
+                                parent_tr_text_splitted=[]    
+                            if 'Cutter' in parent_tr_text_splitted:
                                 print('no dimension width its cutter width')
                             else:   
                                 try: 
@@ -1064,7 +1070,9 @@ data_dict = {
     'Reel_Type':reel_type,
     'Reel_Diameter':reel_dia,
     'Reel_Speed_Adjustment':speed_adjustment,
-    # 'Reel_Height_Adjusment':reel_height_adj,
+    'Max_Revolution':max_revolution,
+    'Min_Revolution':min_revolution,
+    'Reel_Height_Adjustment':reel_height_adj,
     'Cooling_System':cooling_sys,
     'Colling_Cap':cooling_cap,
     'Threshing_Width':threshing_width,
@@ -1082,7 +1090,8 @@ data_dict = {
     'Dimensions_Length':dimensions_length,
     'Dimensions_Height':dimensions_height,
     'Dimensions_Width':dimensions_width,
-    'Ground_Clearance':ground_clearance
+    'Ground_Clearance':ground_clearance,
+    'Image_Type_Nmae':'product'
 }
 df=pd.DataFrame.from_dict(data_dict, orient="index")
 df= df.transpose()

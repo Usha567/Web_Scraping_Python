@@ -125,8 +125,8 @@ if buttonText == 'Load More Tractors':
     
     # 150-160 pending - till 300, 253-300 need to run again
     # Need to run 250-300 data tomorrow file name is also chnaged
-
-    for i in range(250,300):
+    # 287-300 need to run for it
+    for i in range(270,300):
         print('looping start...i-', i)
         try:
             try:
@@ -286,7 +286,7 @@ data_dict = {
 df=pd.DataFrame.from_dict(data_dict, orient="index")
 df= df.transpose()
 
-writer = pd.ExcelWriter('Tractor_Image_Infos11111.xlsx', engine='xlsxwriter')
+writer = pd.ExcelWriter('Tractor_Image_Infos111111.xlsx', engine='xlsxwriter')
 df.to_excel(writer, sheet_name='Sheet1', index=False,startrow=1, header=False)
 workbook=writer.book
 worksheet = writer.sheets['Sheet1']

@@ -87,6 +87,8 @@ class TractorDetailsFile implements ToModel
             ]);
         }
 
+        #Need to play with image here
+        echo 'image'. $row[46];
         foreach(explode(',',$row[46]) as $p){
             $imagemapping = Images_mapping::create([
                 'product_id'=> $product->id,
