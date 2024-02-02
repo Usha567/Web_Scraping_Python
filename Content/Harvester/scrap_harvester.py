@@ -158,7 +158,7 @@ if buttonText == 'Load More Harvesters':
     # print('click3',count)
 
 
-    for i in range(1,6):
+    for i in range(3,4):
         print('looping start...i-', i)
 
         try:
@@ -227,8 +227,7 @@ if buttonText == 'Load More Harvesters':
                     img_name = "img"+str(i)+"-"+name[name.rfind("/") + 1:]
                     imagename_list.append(img_name+'.png'.format(i))
                     urllib.request.urlretrieve(str(src[i]), dirname+"/"+img_name+'.png'.format(i))
-            
-                 
+                
             files = os.listdir(dirname)
             for file in files:
                 print('file-',file)
@@ -278,7 +277,7 @@ if buttonText == 'Load More Harvesters':
             feature_list =['','']
             feature_ans_list=['','']
 
-            print('feature l-',len(feature))
+            # print('feature l-',len(feature))
 
             for jj in range(2, len(feature)+1):
                 ele = driver.find_element(By.CSS_SELECTOR,
@@ -287,7 +286,7 @@ if buttonText == 'Load More Harvesters':
                 element = driver.find_element(By.CSS_SELECTOR,
                         "div.product-single-features-inner:nth-child("+str(jj)+")>p").text
                 feature_ans_list.append(element)
-            print('feature_list//-',feature_list, feature_ans_list) 
+            # print('feature_list//-',feature_list, feature_ans_list) 
 
             try:
                 if 'Power'  in  feature_list:
@@ -339,7 +338,7 @@ if buttonText == 'Load More Harvesters':
                 else:    
                     tr_text_list.append(text)
 
-            print('tr_text_list-', tr_text_list)    
+            # print('tr_text_list-', tr_text_list)    
              
             if 'TYPE'.capitalize() in [(i.capitalize()).strip() for i in tr_text_list]:
                 print('Type in tr_text_list')
@@ -628,14 +627,29 @@ if buttonText == 'Load More Harvesters':
                     if ':' in tr_text:
                         tr_text = tr_text[:-1]
                     if tr_text.strip() == 'Width (mm)' or tr_text.strip() == 'SieveCase Length x Width (mm)' or tr_text.strip() == 'Threshing Drum Width' or tr_text.strip() == 'Drum Width': 
-                        try:
-                            ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
-                            print('threshing_width --/-', ans_text)
-                            threshing_width.append(ans_text)
-                        except NoSuchElementException as e:
-                            print('no such element--/-') 
-                            threshing_width.append('')         
-            else:
+                        if tr_text.strip() == 'Width (mm)': 
+                            parent_tr_index = tr_list.index(tr)
+                            parent_tr_text=(tr_list[parent_tr_index-2].find_element(By.CSS_SELECTOR, 
+                            "td:nth-child(1)").text).lstrip()
+                            parent_tr_splitted_text = parent_tr_text.split()
+                            print('thresh parent_tr_splitted_text-- ', parent_tr_splitted_text)
+                            if 'Threshing' in parent_tr_splitted_text:
+                                try:
+                                    ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                                    print('not cutter threshing_width --/-', ans_text)
+                                    threshing_width.append(ans_text)
+                                except NoSuchElementException as e:
+                                    print('no such element--/-') 
+                                    threshing_width.append('')         
+                        else:
+                            try:
+                                ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
+                                print('threshing_width --/-', ans_text)
+                                threshing_width.append(ans_text)
+                            except NoSuchElementException as e:
+                                print('no such element--/-') 
+                                threshing_width.append('')            
+            else:        
                 print('else-no threshing_width...')
                 threshing_width.append('')  
 
@@ -650,7 +664,8 @@ if buttonText == 'Load More Harvesters':
 
                         print('Threshing parent_tr_text--', parent_tr_text)
 
-                        if parent_tr_text == 'Threshing Drum':
+                        parent_tr_splitted_text = parent_tr_text.split()
+                        if 'Threshing' in parent_tr_splitted_text:
                             try:
                                 ans_text = (tr.find_element(By.CSS_SELECTOR, "td:nth-child(2)").text).lstrip()
                                 print('threshing_width ans_texttype--/-', ans_text)
@@ -1064,34 +1079,42 @@ data_dict = {
     'Engine_Rated_RPM':engine_rpm,
     'Hp_Power':power,
     'Engine_Air_Filter':engine_airfilter,
+
     'Minimum_Cutting_Height':cutter_min_height,
     'Maximum_Cutting_Height':cutter_max_height,
     'Cutter_Height_Adjusment':cutter_height_adj,
+
     'Reel_Type':reel_type,
     'Reel_Diameter':reel_dia,
     'Reel_Speed_Adjustment':speed_adjustment,
     'Max_Revolution':max_revolution,
     'Min_Revolution':min_revolution,
     'Reel_Height_Adjustment':reel_height_adj,
+
     'Cooling_System':cooling_sys,
     'Colling_Cap':cooling_cap,
+
     'Threshing_Width':threshing_width,
     'Threshing_Length':threshing_length,
     'Threshing_Diameter':threshing_diameter,
     'Threshing_Drum_Speed_Adjustment':threshing_adjusment,
     'Clearance_Concave':concave_clearance,
+
     'Grain_Tank_Capacity':grain_tank_capacity,
+
     'Transmission_Gear':transmission_gear,
     'Transmission_Clutch_Type':transmission_clutch_type,
     'Front_Tyre_Size':tyre_size_front,
     'Rear_Tyre_Size':tyre_size_rear,
+
     'Fuel_Tank_Capacity':fuel_tank_capacity,
+    
     'Total_Weight':total_weight,
     'Dimensions_Length':dimensions_length,
     'Dimensions_Height':dimensions_height,
     'Dimensions_Width':dimensions_width,
     'Ground_Clearance':ground_clearance,
-    'Image_Type_Nmae':'product'
+    'Image_Type_Nmae':['product']
 }
 df=pd.DataFrame.from_dict(data_dict, orient="index")
 df= df.transpose()
