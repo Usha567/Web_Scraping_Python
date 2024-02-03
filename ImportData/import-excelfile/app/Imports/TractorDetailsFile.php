@@ -41,8 +41,8 @@ class TractorDetailsFile implements ToModel
             'hp_category'=>$row[3]!=''?explode('HP', $row[3])[0]:NULL,
             'brake_type_id'=>$row[6]!=''?Lookup_data::where('lookup_data_value', $row[6])->first()->id:NULL,
             'warranty'=>$row[7],
-            'starting_price'=> $price!=''?$price[0]:NULL,
-            'ending_price'=> $price!=''?$price[1]:NULL,
+            'starting_price'=>$row[8]!=''?$price[0]:NULL,
+            'ending_price'=> $row[8]!=''?$price[1]:NULL,
             'engine_capacity_cc'=>$row[11]!=''?explode('CC', $row[11])[0]:NULL,
             'engine_rated_rpm'=>$row[12],
             'cooling_id'=>$row[13]!=''?Lookup_data::where('lookup_data_value', $row[13])->first()->id:NULL,
@@ -53,10 +53,10 @@ class TractorDetailsFile implements ToModel
             'transmission_clutch_id'=>$row[18]!=''?Lookup_data::where('lookup_data_value', $row[18])->first()->id:NULL,
             'gear_box_forward'=>$gear_box_forward[0],
             'gear_box_reverse'=>$gear_box_reverse[0],
-            'min_forward_speed'=> $row[23]!=''?explode('-', $row[23])[0]:NULL,
-            'max_forward_speed'=> $row[23]!=''?explode('-', $row[23])[1]:NULL,
-            'min_reverse_speed'=> $row[25]!=''?explode('-', $row[25])[0]:NULL,
-            'max_reverse_speed'=> $row[25]!=''?explode('-', $row[25])[1]:NULL,
+            'min_forward_speed'=> $row[23]!='' &&str_contains($row[23],'-')?explode('-', $row[23])[0]:NULL,
+            'max_forward_speed'=> $row[23]!=''&& str_contains($row[23],'-')?explode('-', $row[23])[1]:NULL,
+            'min_reverse_speed'=> $row[25]!=''&& str_contains($row[23],'-')?explode('-', $row[25])[0]:NULL,
+            'max_reverse_speed'=> $row[25]!=''&& str_contains($row[23],'-')?explode('-', $row[25])[1]:NULL,
 
             'steering_details_id'=> $row[26]!=''?Lookup_data::where('lookup_data_value', $row[26])->first()->id:NULL,
             'steering_column_id'=>$row[27]!=''?Lookup_data::where('lookup_data_value', $row[27])->first()->id:NULL,
@@ -88,13 +88,14 @@ class TractorDetailsFile implements ToModel
         }
 
         #Need to play with image here
-        echo 'image'. $row[46];
-        foreach(explode(',',$row[46]) as $p){
-            $imagemapping = Images_mapping::create([
-                'product_id'=> $product->id,
-                'image_type_id'=>image_types::where('image_type_name', $row[45])->first()->id,
-                'image_name'=>$p
-            ]);
-        }
+        // $prod_id = Product::where('model', $row[1])->id;
+        // foreach(explode(',',$row[2]) as $p){
+        //     echo '$p-'.$p,  $prod_id ;
+        //     $imagemapping = Images_mapping::create([
+        //         'product_id'=>  $prod_id,
+        //         'image_type_id'=>image_types::where('image_type_name', $row[3])->first()->id,
+        //         'image_name'=>$p
+        //     ]);
+        // }
     }
 }
