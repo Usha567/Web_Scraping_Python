@@ -7,6 +7,7 @@ from urllib.parse import urlparse
 import xlsxwriter
 import pandas as pd
 from PIL import Image , ImageFont, ImageDraw
+import rembg
 from rembg import remove 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
