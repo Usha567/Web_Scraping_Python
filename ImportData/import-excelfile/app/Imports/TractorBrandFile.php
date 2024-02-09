@@ -17,13 +17,30 @@ class TractorBrandFile implements ToModel
     */
     public function model(array $row)
     {
-        $brand = Brand::create([
-            'brand_name'=>$row[0],
-            'brand_img'=>$row[1]
-        ]);
+        // $brand = Brand::create([
+        //     'brand_name'=>$row[0],
+        //     'brand_img'=>$row[1]
+        // ]);
+        echo '$row[0]-'.$row[0];
+        $brands = Brand::where('brand_name', $row[0])->first();
+        if(!is_null($brands)){
+            echo 'not null';
+            $brands->update(['brand_img' => $row[1]]);
+            $brands->brand_img = $row[1];
+        }
+        else{
+            echo'null';
+            $brand = Brand::create([
+                'brand_name'=>$row[0],
+                'brand_img'=>$row[1]
+            ]);
+        }
+       
 
+        // $brand = Brand::all()
+        echo ' $row[0]-'. $row[0];
         $brand_type = Brand_type_mapping::create([
-            'brand_id'=> $brand->id,
+            'brand_id'=> Brand::where('brand_name', $row[0])->first()->id,
             'product_type_id'=>Product_type::where('product_type_name', $row[2])->first()->id
         ]);
     }

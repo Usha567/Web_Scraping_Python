@@ -24,7 +24,7 @@ options.add_argument("--disable-popup-blocking")
 driver = webdriver.Chrome()
 
 # driver.get('https://www.tractorjunction.com/')
-driver.get('https://www.tractorjunction.com/tractor-combine-harvesters/?shortBy=&harbrand=87&cutting=&power=')
+driver.get('https://www.tractorjunction.com/tractor-combine-harvesters/?shortBy=&harbrand=61%2C229&cutting=&power=')
 
 wait = WebDriverWait(driver, 15)
 driver.execute_script('window.scrollTo(0, 500)')
@@ -163,7 +163,7 @@ dimensions_width=[]
     # print('click3',count)
 
 
-for i in range(7,8):
+for i in range(1,8):
     print('looping start...i-', i)
 
     try:
@@ -237,51 +237,51 @@ for i in range(7,8):
                 name = os.path.splitext(path)[0]
                 img_name = "img"+str(i)+"-"+name[name.rfind("/") + 1:]
                 imagename_list.append(img_name+'.png'.format(i))
-                # urllib.request.urlretrieve(str(src[i]), dirname+img_name+'.png'.format(i))
+                urllib.request.urlretrieve(str(src[i]), dirname+img_name+'.png'.format(i))
             
-        # files = os.listdir(dirname)
-        # for file in files:
-        #     print('file-',file)
-        #     im = Image.open(os.path.join(dirname+file))
-        #     output_path = dirname+file 
+        files = os.listdir(dirname)
+        for file in files:
+            print('file-',file)
+            im = Image.open(os.path.join(dirname+file))
+            output_path = dirname+file 
 
-        #     output = remove(im,  bgcolor=(255, 255, 255, 255)) 
-        #     output.save(output_path, quality=95) 
+            output = remove(im,  bgcolor=(255, 255, 255, 255)) 
+            output.save(output_path, quality=95) 
 
-        # print('dirname/', dirname)
-        # #Adding Watermark
-        # rem_bgfiles = os.listdir(dirname)
-        # for file in rem_bgfiles:
-        #     print('file///-', file)
-        #     with Image.open(dirname+file) as img:
-        #         width, height = img.size
-        #         txt = Image.new("RGBA", img.size, (255, 255, 255, 0))
+        print('dirname/', dirname)
+        #Adding Watermark
+        rem_bgfiles = os.listdir(dirname)
+        for file in rem_bgfiles:
+            print('file///-', file)
+            with Image.open(dirname+file) as img:
+                width, height = img.size
+                txt = Image.new("RGBA", img.size, (255, 255, 255, 0))
                 
-        #         d = ImageDraw.Draw(txt)
-        #         _, _, w, h = d.textbbox((0, 0), "Bharatagrimart")
-        #         fontsize = 1
+                d = ImageDraw.Draw(txt)
+                _, _, w, h = d.textbbox((0, 0), "Bharatagrimart")
+                fontsize = 1
 
-        #         img_fraction = 0.25
-        #         font = ImageFont.truetype("BerkshireSwash-Regular.ttf", fontsize)
-        #         while d.textbbox((0, 0), "Bharatagrimart", font=font)[2] < img_fraction * width:
-        #             fontsize += 1
-        #             font = ImageFont.truetype("BerkshireSwash-Regular.ttf", fontsize)
-        #         fontsize -= 1
-        #         font = ImageFont.truetype("BerkshireSwash-Regular.ttf", fontsize)
-        #         print('width-',width, height, w,h) 
-        #         if(width > 450 and height>180):
-        #             print('if...')
-        #             d.text(((width/2+157),(height-h-12)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
-        #         elif(width==320 and height==180):
-        #             print('elif...')
-        #             d.text(((width/2+(w*1.20)),(height/2+(height/3)+h*1.3)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
-        #         else:
-        #             print('else//..')
-        #             d.text(((width/2+70),(height-h-5)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
+                img_fraction = 0.25
+                font = ImageFont.truetype("BerkshireSwash-Regular.ttf", fontsize)
+                while d.textbbox((0, 0), "Bharatagrimart", font=font)[2] < img_fraction * width:
+                    fontsize += 1
+                    font = ImageFont.truetype("BerkshireSwash-Regular.ttf", fontsize)
+                fontsize -= 1
+                font = ImageFont.truetype("BerkshireSwash-Regular.ttf", fontsize)
+                print('width-',width, height, w,h) 
+                if(width > 450 and height>180):
+                    print('if...')
+                    d.text(((width/2+157),(height-h-12)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
+                elif(width==320 and height==180):
+                    print('elif...')
+                    d.text(((width/2+(w*1.20)),(height/2+(height/3)+h*1.3)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
+                else:
+                    print('else//..')
+                    d.text(((width/2+70),(height-h-5)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
                 
-        #         out = Image.alpha_composite(img.convert("RGBA"), txt)
-        #         output_path = dirname+file
-        #         out.save(output_path)
+                out = Image.alpha_composite(img.convert("RGBA"), txt)
+                output_path = dirname+file
+                out.save(output_path)
 
         images_name.append(imagename_list)
 

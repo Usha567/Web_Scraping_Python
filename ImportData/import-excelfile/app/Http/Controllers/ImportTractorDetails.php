@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Excel;
 use App\Imports\TractorDetailsFile;
+use App\Imports\HarvesterDetailsFile;
 use Illuminate\Http\Request;
 
 class ImportTractorDetails extends Controller
@@ -13,14 +14,22 @@ class ImportTractorDetails extends Controller
          'file'=>'required|mimes:xlsx,xls'
         ]);
         $file = $request->file('file');
+        echo '$file--'. $file;
  
         //process excel file
-        Excel::import(new TractorDetailsFile, $file);
+        try{
+            echo 'try';
+            Excel::import(new TractorDetailsFile, $file);
+        }
+        catch(Exception $e){
+            echo 'exception-'.$e;
+        }
+       
         return response()->json('Tractor details imported Successfully', 200);
     }
     public function importHarvester(Request $request){
         $request->validate([
-            'file'=>'required|mimes:xlsx, xls'
+            'file'=>'required|mimes:xlsx,xls'
         ]);
         $file = $request->file('file');
         
