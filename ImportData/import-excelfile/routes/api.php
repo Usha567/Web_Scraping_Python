@@ -23,3 +23,4 @@ Route:: post('/import-excel',[ExcelImportController::class, 'import']);
 Route::post('/import-brand', [TractorBrandImport::class, 'importBrand']);
 Route::post('/import-tractor', [ImportTractorDetails::class, 'importTractor']);
 Route::post('/import-harvester', [ImportTractorDetails::class, 'importHarvester']);
+Route::post('/import-tyre', [ImportTractorDetails::class, 'importTyre']);

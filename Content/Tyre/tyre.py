@@ -152,9 +152,33 @@ if buttonText == 'Load More Tyres':
     load_more.click()
     time.sleep(1)
     load_more.click()
+    time.sleep(1)
     load_more.click()
+    time.sleep(1)
     load_more.click()
+    time.sleep(1)
     load_more.click()
+    time.sleep(1)
+    load_more.click()
+    time.sleep(1)
+    load_more.click()
+    time.sleep(1)
+    load_more.click()
+    time.sleep(1)
+    load_more.click()
+    time.sleep(1)
+    load_more.click()
+    time.sleep(1)
+    load_more.click()
+    time.sleep(1)
+    load_more.click()
+    time.sleep(1)
+    load_more.click()
+    time.sleep(1)
+    load_more.click()
+    time.sleep(1)
+    load_more.click()
+    time.sleep(1)
 
     # For load more harvester 
     count=0
@@ -181,7 +205,7 @@ if buttonText == 'Load More Tyres':
     print('click3',count)
 
 
-    for i in range(10,50):
+    for i in range(120,125):
         print('looping start...i-', i)
 
         try:
@@ -224,6 +248,10 @@ if buttonText == 'Load More Tyres':
                 if img not in src:
                     src.append(img.get_attribute('src'))
             image_list.append(src)
+
+            if '/' in model:
+                m= model.split('/')
+           
         
             dirname = "imgaes/"
             imagename_list=[]
@@ -232,7 +260,7 @@ if buttonText == 'Load More Tyres':
                     path = urlparse(src[i]).path
                     extension = os.path.splitext(path)[1]
                     name = os.path.splitext(path)[0]
-                    img_name = "img"+str(i)+"-"+name[name.rfind("/") + 1:]
+                    img_name = model[0] if '/' in model else model+"img"+str(i)+"-"+name[name.rfind("/") + 1:]
                     imagename_list.append(img_name+'.png'.format(i))
                     urllib.request.urlretrieve(str(src[i]), dirname+img_name+'.png'.format(i))
                 
@@ -335,6 +363,7 @@ if buttonText == 'Load More Tyres':
             try:
                 print('load_more_again..')
                 count=0
+                load_more = WebDriverWait(driver, 4).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "div.container-mid p#loadMoreDiv a#loadmorebtn")))
                 buttonText = driver.find_element(By.CSS_SELECTOR, "div.container-mid p#loadMoreDiv a#loadmorebtn").get_attribute('innerHTML')
                 while buttonText == 'Load More Tyres':
                     buttonText = driver.find_element(By.CSS_SELECTOR, "div.container-mid p#loadMoreDiv a#loadmorebtn").get_attribute('innerHTML')    
@@ -349,6 +378,7 @@ if buttonText == 'Load More Tyres':
                 print('clicked on modal...///')
             except ElementClickInterceptedException as e:
                 print('ElementClickInterceptedException---///')
+                driver.execute_script("arguments[0].click();", load_more)
 
             except TimeoutException as e:
                 print('TimeoutException for load more btn..//')    

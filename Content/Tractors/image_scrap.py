@@ -126,28 +126,44 @@ if buttonText == 'Load More Tractors':
     # 150-160 pending - till 300, 253-300 need to run again
     # Need to run 250-300 data tomorrow file name is also chnaged
     # 287-300 need to run for it
-    for i in range(270,300):
+    for i in range(100,150):
         print('looping start...i-', i)
         try:
             try:
                 print('click on image..///')
-                new_tractor = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR,
+                new_tractor = WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.CSS_SELECTOR,
                 "div#tractorMoreData div:nth-child("+str(i)+")>div.new-tractor-main>div.new-tractor-img>a>img")))
                 new_tractor.click()
                 time.sleep(2)
 
-                modal=WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
-                close_modal= WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
+                modal=WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
+                close_modal= WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
                 close_modal.click()
             except TimeoutException as e:
                 print('TimeoutException for close btn..///..//')   
+            except ElementClickInterceptedException as e:
+                print('ElementClickInterceptedException---....') 
+                driver.execute_script("arguments[0].click();", close_modal)
 
-            brand = driver.find_element(By.CSS_SELECTOR, "div.product-single-features-inner>p>a").text
+            try:
+                modal_=WebDriverWait(driver, 15).until(EC.presence_of_element_located((By.CSS_SELECTOR,"div.modal-content span.close")))
+                close_modal_= WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.modal-content span.close")))
+                close_modal_.click()   
+            except TimeoutException as e:
+                print('TimeoutException for close btn..///..//')   
+            except ElementClickInterceptedException as e:
+                print('ElementClickInterceptedException---....') 
+                driver.execute_script("arguments[0].click();", close_modal_)     
+
+
+            brand = driver.find_element(By.CSS_SELECTOR, "div.product-single-features-inner p>a").text
             brand_list.append(brand)
 
             model_name=[]
             model = driver.find_element(By.XPATH, "//li[@itemprop='itemListElement']/span[@itemprop='name']").text
             model_list.append(model)
+
+            print('model-',model)
 
             model_name_ = driver.find_element(By.CSS_SELECTOR, 
             "div.product-single-top>div.product-tooltip>h1").text
@@ -165,37 +181,39 @@ if buttonText == 'Load More Tractors':
 
             print('src//- ', src)
             
-            if '/' in model:
-                m= model.split('/')
-                dirname = "Tractors_Images/"+(((brand.split('Tractors')[0]).capitalize()).strip())+"_"+str(i)+"_"+m[0]+"_"+m[1]
-                print('dirname-', dirname)
-            else:
-                dirname = "Tractors_Images/"+(((brand.split('Tractors')[0]).capitalize()).strip())+"_"+str(i)+"_"+model
-                print('dirname-', dirname)     
-            try:
-                os.mkdir(dirname)
-            except OSError as e:
-                if e.errno == errno.EEXIST:
-                    print('Dir not created')
-                else:
-                    os.mkdir(dirname)
+            # if '/' in model:
+            #     m= model.split('/')
+            #     dirname = "Tractors_Images/"+(((brand.split('Tractors')[0]).capitalize()).strip())+"_"+str(i)+"_"+m[0]+"_"+m[1]
+            #     print('dirname-', dirname)
+            # else:
+            #     dirname = "Tractors_Images/"+(((brand.split('Tractors')[0]).capitalize()).strip())+"_"+str(i)+"_"+model
+            #     print('dirname-', dirname)     
+            # try:
+            #     os.mkdir(dirname)
+            # except OSError as e:
+            #     if e.errno == errno.EEXIST:
+            #         print('Dir not created')
+            #     else:
+            #         os.mkdir(dirname)
+            dirname = "Tractors_Images/"
 
             imagename_list=[]
             for i in range((len(src))):
                 if(src[i] != ''):
+                    print('src---')
                     path = urlparse(src[i]).path
                     extension = os.path.splitext(path)[1]
                     name = os.path.splitext(path)[0]
-                    img_name = "img"+str(i)+"-"+name[name.rfind("/") + 1:]
+                    img_name = model+"img"+str(i)+"-"+name[name.rfind("/") + 1:]
                     imagename_list.append(img_name+'.png'.format(i))
-                    urllib.request.urlretrieve(str(src[i]), dirname+"/"+img_name+'.png'.format(i))
+                    urllib.request.urlretrieve(str(src[i]), dirname+img_name+'.png'.format(i))
             
              
             files = os.listdir(dirname)
             for file in files:
                 print('file-',file)
-                im = Image.open(os.path.join(dirname+"/", file))
-                output_path = dirname+"/"+file 
+                im = Image.open(os.path.join(dirname, file))
+                output_path = dirname+file 
 
                 output = remove(im,  bgcolor=(255, 255, 255, 255)) 
                 output.save(output_path, quality=95) 
@@ -204,7 +222,7 @@ if buttonText == 'Load More Tractors':
             rem_bgfiles = os.listdir(dirname)
             for file in rem_bgfiles:
                 print('file///-', file)
-                with Image.open(dirname+"/"+file) as img:
+                with Image.open(dirname+file) as img:
                     width, height = img.size
                     txt = Image.new("RGBA", img.size, (255, 255, 255, 0))
                     
@@ -231,27 +249,34 @@ if buttonText == 'Load More Tractors':
                         d.text(((width/2+112),(height-h-10)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
                     
                     out = Image.alpha_composite(img.convert("RGBA"), txt)
-                    output_path = dirname+"/"+file
+                    output_path = dirname+file
                     out.save(output_path)
 
             images_name.append(imagename_list)
-            # driver.back()
+            print('now go back.........')
+            driver.back()
             time.sleep(2)
 
-            nav_bar = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,'ul.navbar-nav>li>a#navbarDropdown1')))
-            nav_bar.click()
-            time.sleep(1)
+            # nav_bar = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,'ul.navbar-nav>li>a#navbarDropdown1')))
+            # nav_bar.click()
+            # time.sleep(1)
 
-            dropdown_menu = wait.until(EC.element_to_be_clickable((By.XPATH,"//div[@aria-labelledby='navbarDropdown1']/ul/li/a[@title='All Tractors']")))
-            dropdown_menu.click()
-            time.sleep(2)
+            # dropdown_menu = wait.until(EC.element_to_be_clickable((By.XPATH,"//div[@aria-labelledby='navbarDropdown1']/ul/li/a[@title='All Tractors']")))
+            # dropdown_menu.click()
+            # time.sleep(2)
+
+            # try:
+            #     close_modal= WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
+            #     close_modal.click()
+            #     time.sleep(2)
+            # except ElementClickInterceptedException as e:
+            #     print('ElementClickInterceptedException---///')
+            #     driver.execute_script("arguments[0].click();", close_modal)
+            # except TimeoutException as e:
+            #     print('TimeoutException for load more btn..//')    
 
             try:
                 print('load_more_again..')
-                close_modal= WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
-                close_modal.click()
-                time.sleep(2)
-
                 load_more = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.ID, "loadmorebtn")))
                 buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')
                 while buttonText == 'Load More Tractors':
@@ -259,15 +284,15 @@ if buttonText == 'Load More Tractors':
                     if buttonText != 'Load More Tractors':
                         break
                     else:  
-                        load_more = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.ID, "loadmorebtn")))
-                        
+                        load_more = WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.ID, "loadmorebtn")))
                         driver.execute_script("arguments[0].click();", load_more)
                 print('clicked on modal...///')
             except ElementClickInterceptedException as e:
                 print('ElementClickInterceptedException---///')
+                driver.execute_script("arguments[0].click();", load_more)
 
             except TimeoutException as e:
-                print('TimeoutException for load more btn..//')    
+                print('TimeoutException for load more btn..//')
 
         except ElementClickInterceptedException:
             print('ElementClickInterceptedException+++....')
@@ -286,7 +311,7 @@ data_dict = {
 df=pd.DataFrame.from_dict(data_dict, orient="index")
 df= df.transpose()
 
-writer = pd.ExcelWriter('Tractor_Image_Infos111111.xlsx', engine='xlsxwriter')
+writer = pd.ExcelWriter('Tractor_Image_Infos.xlsx', engine='xlsxwriter')
 df.to_excel(writer, sheet_name='Sheet1', index=False,startrow=1, header=False)
 workbook=writer.book
 worksheet = writer.sheets['Sheet1']

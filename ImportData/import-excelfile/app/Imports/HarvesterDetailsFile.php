@@ -42,11 +42,12 @@ class HarvesterDetailsFile implements ToModel
             $gear_box_reverse=[''];
         }
 
-        echo '$row[0]-'.$row[0];
+        echo '$row[3]-'.$row[3];
         $product = Product::create([
             'brand_id'=>$row[0] !=''?Brand::where('brand_name', trim($row[0]))->first()->id:NULL,
+            'product_type_id'=>$row[40] !=''?Product_type::where('product_type_name', $row[40])->first()->id:NULL,
             'model'=>$row[1],
-            'total_cyclinder_id'=>$row[4],
+            'total_cyclinder_id'=>$row[4]!=''?Lookup_data::where('lookup_data_value', $row[4])->first()->id:NULL,
             'hp_category'=>$row[9]!=''?$row[9]:NULL,
             'engine_rated_rpm'=>$row[8],
             'air_filter_id'=>$row[11]!=''?Lookup_data::where('lookup_data_value', trim($row[11]))->first()->id:NULL,

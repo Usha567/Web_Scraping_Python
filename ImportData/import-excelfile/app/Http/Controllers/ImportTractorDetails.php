@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Excel;
 use App\Imports\TractorDetailsFile;
 use App\Imports\HarvesterDetailsFile;
+use App\Imports\TyreDetailsFile;
 use Illuminate\Http\Request;
 
 class ImportTractorDetails extends Controller
@@ -34,6 +35,17 @@ class ImportTractorDetails extends Controller
         $file = $request->file('file');
         
         Excel::import(new HarvesterDetailsFile , $file);
+        return response()->json('Harvester details imported Successfully',200);
+    }
+
+    
+    public function importTyre(Request $request){
+        $request->validate([
+            'file'=>'required|mimes:xlsx,xls'
+        ]);
+        $file = $request->file('file');
+        
+        Excel::import(new TyreDetailsFile , $file);
         return response()->json('Harvester details imported Successfully',200);
     }
 
