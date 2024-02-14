@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Product;
+use App\Models\Tyre;
 use App\Models\Brand;
 use App\Models\Product_type;
 use App\Models\Tyre_category;
@@ -12,7 +13,7 @@ use App\Models\Images_mapping;
 use App\Models\image_types;
 use Maatwebsite\Excel\Concerns\ToModel;
 
-class TyreDetailsFile implements ToCollection
+class TyreDetailsFile implements ToModel
 {
     /**
     * @param array $row
@@ -21,42 +22,80 @@ class TyreDetailsFile implements ToCollection
     */
     public function model(array $row)
     {
-        //For checking error
-        // echo '$row[10]-'.$row[10] . "\n";
-        // if($row[10]!=''){
-        //     $id=Status_types::where('type_name', $row[10])->first()->id;
-        //     echo 'id-'.$id;
+        // echo '$row[5]-'.$row[5];
+        // if($row[5]!='' && $row[6]==''){
+        //     $tyre_size=trim($row[5]);
         // }
-        // else{
-        //     echo 'else\n';
-        //     null;
+        // else if ($row[5]=='' && $row[6]!=''){
+        //     $tyre_size=trim($row[6]);
+        // }
+        // else if($row[5]!='' && $row[6]!=''){
+        //     $tyre_size=$row[5].'X'.trim($row[6]);
+        // }
+        // else if ($row[5]=='' && $row[6]==''){
+        //     $tyre_size=NULL;
+        // }
+        // // To update data
+        // $tyre = Tyre::where('model', $row[1])->first();
+        // if(!is_null($tyre)){
+        //     $tyre->brand_id=$row[0]!=''?Brand::where('brand_name', trim($row[0]))->first()->id:NULL;
+        //     $tyre->tyre_model=$row[1];
+        //     $tyre->tyre_category_id=$row[3]!=''?Tyre_category::where('category', trim($row[3]))->first()->id:NULL;
+        //     $tyre->tyre_position=$row[4]!=''?trim($row[4]):NULL;
+        //     $tyre->tyre_size=$tyre_size;
+        
+        //     // To delete data
+        //     // $tyre->delete();
+        //     // $imgmaps=Images_mapping::where('product_id',  $tyre->id)->get();
+        //     // if(!is_null($imgmaps)){
+        //     //     foreach($imgmaps as $imgd){
+        //     //         $imgd->delete();
+        //     //     }
+        //     // }
+        //     foreach(explode(',', $row[2]) as $p){
+        //         $imagemapping = Images_mapping::create([
+        //             'product_id'=>  $tyre->id,
+        //             'image_type_id'=>image_types::where('image_type_name', trim($row[8]))->first()->id,
+        //             'image_name'=>trim($p)
+        //         ]);
+        //     }
         // }
 
-        echo '$row[0]-'.$row[0];
-        $product = Product::create([
-            'brand_id'=>$row[0] !=''?Brand::where('brand_name', trim($row[0]))->first()->id:NULL,
-            'product_type_id'=>$row[9] !=''?Product_type::where('product_type_name', trim($row[9]))->first()->id:NULL,
-            'model'=>$row[1],
-            'description'=>json_encode($row[7]),
-            'implement_category_id'=>$row[3]!=''?Tyre_category::where('category', trim($row[3]))->first()->id:NULL,
-            'tyre_position'=>$row[4]!=''?$row[4]:NULL,
-            'tyre_diameter'=>$row[5]!=''?$row[5]:NULL,
-            'tyre_width'=>$row[6]!=''?$row[6]:NULL,
-        ]);
+        // $tyre=Tyre::create([
+        //     'brand_id'=>$row[0]!=''?Brand::where('brand_name', trim($row[0]))->first()->id:NULL,
+        //     'tyre_model'=>$row[1],
+        //     'tyre_category_id'=>$row[3]!=''?Tyre_category::where('category', trim($row[3]))->first()->id:NULL,
+        //     'tyre_position'=>$row[4]!=''?trim($row[4]):NULL,
+        //     'tyre_size'=>$tyre_size,
+        // ]);
+        // $tyre->save();
         
         #Need to play with image here
         echo '$row[1]-'.$row[1];
-        $prod = Product::where('model', $row[1])->first();
-        if(!is_null($prod)){
-            $prod_id= $prod->id;
-            $imagemapping = Images_mapping::create([
-                'product_id'=>  $prod_id,
-                'image_type_id'=>image_types::where('image_type_name', trim($row[8]))->first()->id,
-                'image_name'=>trim($row[2])
-            ]);
+        $tyres = Tyre::where('tyre_model', $row[1])->get();
+        if(!is_null($tyres)){
+            foreach($tyres as $tyre){
+                $tyre_id= $tyre->id;
+                echo' $tyre_id---'. $tyre_id;
+                // $tyre->delete();
+                // $imgmaps=Images_mapping::where('product_id',  $tyre->id)->get();
+                // if(!is_null($imgmaps)){
+                //     foreach($imgmaps as $imgd){
+                //         $imgd->delete();
+                //     }
+                // }
+            
+                // foreach(explode(',', $row[2]) as $p){
+                    $imagemapping = Images_mapping::create([
+                        'product_id'=>  $tyre_id,
+                        'image_type_id'=>image_types::where('image_type_name', trim($row[8]))->first()->id,
+                        'image_name'=>trim($row[2])
+                    ]);
+                // }
+            }
         }
         else{
-            echo 'prod null';
+            echo 'tyre null';
         }
     }
 }

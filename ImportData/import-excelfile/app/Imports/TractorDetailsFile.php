@@ -112,20 +112,28 @@ class TractorDetailsFile implements ToModel
 
         #Need to play with image here
         echo '$row[1]-'.$row[1];
-        $prod = Product::where('model', $row[1])->first();
-        if(!is_null($prod)){
-            $prod_id= $prod->id;
-            foreach(explode(',', $row[2]) as $p){
-                $imagemapping = Images_mapping::create([
-                    'product_id'=>  $prod_id,
-                    'image_type_id'=>image_types::where('image_type_name', trim($row[3]))->first()->id,
-                    'image_name'=>trim($p)
-                ]);
+        $prods = Product::where('model', ($row[1]))->get();
+        if(!is_null($prods)){
+        foreach($prods as $prod){
+                $prod_id= $prod->id;
+                'id- '.$prod_id;
+                // $imgmaps=Images_mapping::where('product_id',  $prod->id)->get();
+                // if(!is_null($imgmaps)){
+                //     foreach($imgmaps as $imgd){
+                //         $imgd->delete();
+                //     }
+                // }
+                foreach(explode(',', $row[2]) as $p){
+                    $imagemapping = Images_mapping::create([
+                        'product_id'=>  $prod_id,
+                        'image_type_id'=>image_types::where('image_type_name', trim($row[3]))->first()->id,
+                        'image_name'=>trim($p)
+                    ]);
+                }
             }
         }
         else{
             echo 'prod null';
         }
-       
     }
 }

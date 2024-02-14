@@ -22,18 +22,18 @@ options.add_argument("--disable-popup-blocking")
 
 driver = webdriver.Chrome()
 
-driver.get('https://www.tractorjunction.com/')
+driver.get('https://www.tractorjunction.com/cellestial-tractor/')
 
 wait = WebDriverWait(driver, 15)
-driver.execute_script('window.scrollTo(0, 500)')
+# driver.execute_script('window.scrollTo(0, 500)')
 
-nav_bar = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,'ul.navbar-nav>li>a#navbarDropdown1')))
-nav_bar.click()
-time.sleep(1)
+# nav_bar = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,'ul.navbar-nav>li>a#navbarDropdown1')))
+# nav_bar.click()
+# time.sleep(1)
 
-dropdown_menu = wait.until(EC.element_to_be_clickable((By.XPATH,"//div[@aria-labelledby='navbarDropdown1']/ul/li/a[@title='All Tractors']")))
-dropdown_menu.click()
-time.sleep(2)
+# dropdown_menu = wait.until(EC.element_to_be_clickable((By.XPATH,"//div[@aria-labelledby='navbarDropdown1']/ul/li/a[@title='All Tractors']")))
+# dropdown_menu.click()
+# time.sleep(2)
 
 try:
     cross_model=WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
@@ -125,7 +125,7 @@ if buttonText == 'Load More Tractors':
 
     # 140-150 left
     # Need to run this loop again file name is same 
-    for i in range(100,200):
+    for i in range(1,4):
         print('looping start...i-', i)
 
         try:
@@ -136,11 +136,14 @@ if buttonText == 'Load More Tractors':
                 new_tractor.click()
                 time.sleep(2)
 
-                modal=WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
-                close_modal= WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
-                close_modal.click()
+                # modal=WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
+                # close_modal= WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
+                # close_modal.click()
             except TimeoutException as e:
-                print('TimeoutException for close btn..///..//')   
+                print('TimeoutException for close btn..///..//')
+            # except ElementClickInterceptedException:
+            #     print('ElementClickInterceptedException---....') 
+            #     new_tractor.click()      
 
             brand = driver.find_element(By.CSS_SELECTOR, "div.product-single-features-inner>p>a").text
             brand_list.append(brand)
@@ -152,6 +155,8 @@ if buttonText == 'Load More Tractors':
             model_name_ = driver.find_element(By.CSS_SELECTOR, 
             "div.product-single-top>div.product-tooltip>h1").text
             model_name.append(model_name_)
+
+            print('model_list///-', model_list)
 
             # image_list
             tractor_images = driver.find_elements(By.CSS_SELECTOR, "div.slider div.slick-list div.slick-track div.slick-slide>img")
@@ -226,16 +231,16 @@ if buttonText == 'Load More Tractors':
                     out.save(output_path)
                     
             images_name.append(imagename_list)
-            # driver.back()
+            driver.back()
             time.sleep(2)
 
-            nav_bar = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,'ul.navbar-nav>li>a#navbarDropdown1')))
-            nav_bar.click()
-            time.sleep(1)
+            # nav_bar = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR,'ul.navbar-nav>li>a#navbarDropdown1')))
+            # nav_bar.click()
+            # time.sleep(1)
 
-            dropdown_menu = wait.until(EC.element_to_be_clickable((By.XPATH,"//div[@aria-labelledby='navbarDropdown1']/ul/li/a[@title='All Tractors']")))
-            dropdown_menu.click()
-            time.sleep(2)
+            # dropdown_menu = wait.until(EC.element_to_be_clickable((By.XPATH,"//div[@aria-labelledby='navbarDropdown1']/ul/li/a[@title='All Tractors']")))
+            # dropdown_menu.click()
+            # time.sleep(2)
 
             try:
                 print('load_more_again..')
@@ -256,6 +261,7 @@ if buttonText == 'Load More Tractors':
                 print('clicked on modal...///')
             except ElementClickInterceptedException as e:
                 print('ElementClickInterceptedException---///')
+                driver.execute_script("arguments[0].click()", load_more)
 
             except TimeoutException as e:
                 print('TimeoutException for load more btn..//')    
@@ -267,7 +273,7 @@ if buttonText == 'Load More Tractors':
 
     time.sleep(1) 
 
-print('images_name//////-', images_name)
+print('images_name//////-', model_list)
 
 data_dict = {
     'Brand':brand_list,
@@ -277,7 +283,7 @@ data_dict = {
 df=pd.DataFrame.from_dict(data_dict, orient="index")
 df= df.transpose()
 
-writer = pd.ExcelWriter('Tractor_Image_Infos3.xlsx', engine='xlsxwriter')
+writer = pd.ExcelWriter('digitrac.xlsx', engine='xlsxwriter')
 df.to_excel(writer, sheet_name='Sheet1', index=False,startrow=1, header=False)
 workbook=writer.book
 worksheet = writer.sheets['Sheet1']

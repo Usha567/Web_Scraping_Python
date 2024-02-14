@@ -5,6 +5,7 @@ use Excel;
 use App\Imports\TractorDetailsFile;
 use App\Imports\HarvesterDetailsFile;
 use App\Imports\TyreDetailsFile;
+use App\Imports\StateDistFile;
 use Illuminate\Http\Request;
 
 class ImportTractorDetails extends Controller
@@ -33,12 +34,17 @@ class ImportTractorDetails extends Controller
             'file'=>'required|mimes:xlsx,xls'
         ]);
         $file = $request->file('file');
+
+        try{
+            Excel::import(new HarvesterDetailsFile , $file);
+        }
+        catch(Exception $e){
+            echo 'exception-'.$e;
+        }
         
-        Excel::import(new HarvesterDetailsFile , $file);
+       
         return response()->json('Harvester details imported Successfully',200);
     }
-
-    
     public function importTyre(Request $request){
         $request->validate([
             'file'=>'required|mimes:xlsx,xls'
@@ -46,8 +52,15 @@ class ImportTractorDetails extends Controller
         $file = $request->file('file');
         
         Excel::import(new TyreDetailsFile , $file);
-        return response()->json('Harvester details imported Successfully',200);
+        return response()->json('Tyre details imported Successfully',200);
     }
-
-
+    public function importStateDist(Request $request){
+        $request->validate([
+            'file'=>'required|mimes:xlsx,xls'
+        ]);
+        $file = $request->file('file');
+        
+        Excel::import(new StateDistFile , $file);
+        return response()->json('State Dist details imported Successfully',200);
+    }
 }
