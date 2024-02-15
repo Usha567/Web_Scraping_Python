@@ -1,6 +1,8 @@
 import time
 import urllib
 import os
+import shutil
+from glob import glob
 import errno
 import re
 from rembg import remove 
@@ -22,7 +24,7 @@ options.add_argument("--disable-popup-blocking")
 
 driver = webdriver.Chrome()
 
-driver.get('https://www.tractorjunction.com/trakstar-tractor/')
+driver.get('https://www.tractorjunction.com/swaraj-tractor/')
 
 wait = WebDriverWait(driver, 15)
 # driver.execute_script('window.scrollTo(0, 500)')
@@ -125,7 +127,7 @@ if buttonText == 'Load More Tractors':
 
     # 140-150 left
     # Need to run this loop again file name is same 
-    for i in range(1,8):
+    for i in range(1,12):
         print('looping start...i-', i)
 
         try:
@@ -163,12 +165,13 @@ if buttonText == 'Load More Tractors':
             src =[]
 
             for img in tractor_images:
-                if len(src) < 4:
+                if len(src) < 3:
                     src.append(img.get_attribute('src'))
             image_list.append(src)
 
             dirname = "Tractors_Images/"
-            print('dirname-', dirname)
+            # os.mkdir('Moved_Imgaes'+str(i))
+            print('dirname- ', dirname)
             # try:
             #     os.mkdir(dirname)
             # except OSError as e:
@@ -176,16 +179,22 @@ if buttonText == 'Load More Tractors':
             #         print('Dir not created')
             #     else:
             #         raise
+            if '/' in model:
+                m= model.split('/')
+                model = m[0]+"_"+m[1]
+
+            # save image 
             imagename_list=[]
             for i in range((len(src))):
                 if(src[i] != ''):
                     path = urlparse(src[i]).path
                     extension = os.path.splitext(path)[1]
                     name = os.path.splitext(path)[0]
-                    img_name = "img"+str(i)+"-"+name[name.rfind("/") + 1:]
+                    img_name = ''.join(model.split())+"img"+str(i)+"-"+name[name.rfind("/") + 1:]
                     imagename_list.append(img_name+'.png'.format(i))
                     urllib.request.urlretrieve(str(src[i]), dirname+img_name+'.png'.format(i))
             
+            # Add background
             files = os.listdir(dirname)
             for file in files:
                 print('file-',file)
@@ -195,6 +204,7 @@ if buttonText == 'Load More Tractors':
                 output = remove(im,  bgcolor=(255, 255, 255, 255)) 
                 output.save(output_path, quality=95)
 
+            # Add Watermark
             print('dirname/', dirname)
             rem_bgfiles = os.listdir(dirname)
             for file in rem_bgfiles:
@@ -216,20 +226,45 @@ if buttonText == 'Load More Tractors':
                     font = ImageFont.truetype("BerkshireSwash-Regular.ttf", fontsize)
                     print('width-',width, height, w,h) 
                     
-                    if(width > 450 and height>180):
+                    if((width > 450 and width != 1400 and width != 600  and width != 500 )  and (height>180 and height!=933 and height!=350 and height!=500)):
                         print('if...')
                         d.text(((width/2+157),(height-h-12)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
+                    if(width==500 and height==500):
+                        print('if 500..')
+                        d.text(((width/2+157),(height-h-12)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
+                    if(width == 1400 and height==933):
+                        print('if.1400..')
+                        d.text(((width/2+320),(height-h-64)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
                     elif(width==320 and height==180):
                         print('elif...')
                         d.text(((width/2+(w*1.20)),(height/2+(height/3)+h*1.3)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
                     else:
                         print('else//..')
                         d.text(((width/2+112),(height-h-10)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
-                    
+                        
                     out = Image.alpha_composite(img.convert("RGBA"), txt)
                     output_path = dirname+file
                     out.save(output_path)
-                    
+
+            #Moving images
+            subfolder_names=[]
+            source_folders =[dirname]
+            for source_folder in source_folders:
+                print('sorce folder-- //')
+                items = os.listdir(source_folder)
+                subfolders = [item for item in items if os.path.isdir(os.path.join(source_folder, item))]
+                subfolder_names.extend(subfolders)
+            
+            destination_folder = 'Moved_Imgaes'
+            for source_folder in source_folders:
+                image_files = glob(os.path.join(source_folder, '*.jpg')) + glob(os.path.join(source_folder, '*.png')) + glob(os.path.join(source_folder, '*.jpeg'))
+                for image_file in image_files:
+                    filename = os.path.basename(image_file)
+                    destination_path = os.path.join(destination_folder, filename)
+                    # Move the image
+                    print('moving images...')
+                    shutil.move(image_file, destination_path)
+
             images_name.append(imagename_list)
             driver.back()
             time.sleep(2)
@@ -294,3 +329,7 @@ for col_num, value in enumerate(df.columns.values):
 
 writer.close()    
 driver.close()
+
+
+
+
