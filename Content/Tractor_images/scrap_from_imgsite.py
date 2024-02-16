@@ -24,7 +24,7 @@ options.add_argument("--disable-popup-blocking")
 
 driver = webdriver.Chrome()
 
-driver.get('https://www.tractorjunction.com/same-deutz-fahr-tractor/agromaxx-60-2wd/')
+driver.get('https://www.tractorjunction.com/new-holland-tractor/4510/')
 
 wait = WebDriverWait(driver, 15)
 try:

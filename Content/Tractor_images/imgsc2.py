@@ -24,7 +24,7 @@ options.add_argument("--disable-popup-blocking")
 
 driver = webdriver.Chrome()
 
-driver.get('https://www.tractorjunction.com/swaraj-tractor/')
+driver.get('https://www.tractorjunction.com/sonalika-tractor/')
 
 wait = WebDriverWait(driver, 15)
 # driver.execute_script('window.scrollTo(0, 500)')
@@ -125,12 +125,8 @@ if buttonText == 'Load More Tractors':
                 print('TimeoutException for load more..')
     print('click3',count)
 
-    # 140-150 left
-    # Need to run this loop again file name is same 
-#    for  preet
-# 27,30
-# 29-30, 31-34, 35-37
-    for i in range(35,37):
+    # 26-30,31-34,35-38,39-45
+    for i in range(25,50):
         print('looping start...i-', i)
 
         try:

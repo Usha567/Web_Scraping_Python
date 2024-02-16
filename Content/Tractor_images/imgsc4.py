@@ -24,7 +24,7 @@ options.add_argument("--disable-popup-blocking")
 
 driver = webdriver.Chrome()
 
-driver.get('https://www.tractorjunction.com/indo-farm-tractor/')
+driver.get('https://www.tractorjunction.com/sonalika-tractor/')
 
 wait = WebDriverWait(driver, 15)
 # driver.execute_script('window.scrollTo(0, 500)')
@@ -125,10 +125,7 @@ if buttonText == 'Load More Tractors':
                 print('TimeoutException for load more..')
     print('click3',count)
 
-    # 140-150 left
-    # Need to run this loop again file name is same 
-    #  27,28 left
-    for i in range(28,29):
+    for i in range(89,92):
         print('looping start...i-', i)
 
         try:
@@ -139,9 +136,9 @@ if buttonText == 'Load More Tractors':
                 new_tractor.click()
                 time.sleep(2)
 
-                # modal=WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
-                # close_modal= WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
-                # close_modal.click()
+                modal=WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
+                close_modal= WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
+                close_modal.click()
             except TimeoutException as e:
                 print('TimeoutException for close btn..///..//')
             # except ElementClickInterceptedException:
@@ -303,6 +300,7 @@ if buttonText == 'Load More Tractors':
 
         except ElementClickInterceptedException:
             print('ElementClickInterceptedException+++....')
+            driver.execute_script("arguments[0].click();", new_tractor)
         except TimeoutException as e:
             print('TimeoutException for loop-///+++')
 
