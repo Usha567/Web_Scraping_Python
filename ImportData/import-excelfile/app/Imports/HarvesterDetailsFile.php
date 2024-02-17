@@ -31,16 +31,16 @@ class HarvesterDetailsFile implements ToModel
         //     null;
         // }
 
-        echo '$row[29]-'.$row[29];
-        if($row[29] != ''){
-            $r=explode('+',$row[29]);
-            $gear_box_forward=$r[0];
-            $gear_box_reverse=$r[1];
-        }
-        else{
-            $gear_box_forward=[''];
-            $gear_box_reverse=[''];
-        }
+        // echo '$row[29]-'.$row[29];
+        // if($row[29] != ''){
+        //     $r=explode('+',$row[29]);
+        //     $gear_box_forward=$r[0];
+        //     $gear_box_reverse=$r[1];
+        // }
+        // else{
+        //     $gear_box_forward=[''];
+        //     $gear_box_reverse=[''];
+        // }
 
         echo 'harvester model-'.$row[1] ;
         $prod = Product::where('model', $row[1])->first();

@@ -24,7 +24,7 @@ options.add_argument("--disable-popup-blocking")
 
 driver = webdriver.Chrome()
 
-driver.get('https://www.tractorjunction.com/sonalika-tractor/')
+driver.get('https://www.tractorjunction.com/tractor-combine-harvesters/')
 
 wait = WebDriverWait(driver, 15)
 # driver.execute_script('window.scrollTo(0, 500)')
@@ -104,15 +104,15 @@ image_list=[]
 images_name=[]
 
 buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')
-if buttonText == 'Load More Tractors':
+if buttonText == 'Load More Harvesters':
     print('enter if--')
     load_more = wait.until(EC.element_to_be_clickable((By.ID, "loadmorebtn")))
 
     count=0
     buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')
-    while buttonText == 'Load More Tractors':
+    while buttonText == 'Load More Harvesters':
         buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')    
-        if buttonText != 'Load More Tractors':
+        if buttonText != 'Load More Harvesters':
             break
         else:  
             try:
@@ -127,25 +127,26 @@ if buttonText == 'Load More Tractors':
 
     # 140-150 left
     # Need to run this loop again file name is same 
-    for i in range(1,12):
+    for i in range(88,109):
         print('looping start...i-', i)
 
         try:
             try:
                 print('click on image..///')
-                new_tractor = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,
-                "div#tractorMoreData div:nth-child("+str(i)+")>div.new-tractor-main>div.new-tractor-img>a>img")))
-                new_tractor.click()
+                new_harvester = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div#harvesterMoreData div:nth-child("+str(i)+")>div.implement-main>div.implement-img>a>img")))
+                new_harvester.click()
                 time.sleep(2)
 
-                # modal=WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
-                # close_modal= WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
+                # modal=WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
+                # close_modal= WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"div.tj-product-list-popup span.list_close")))
                 # close_modal.click()
+
             except TimeoutException as e:
                 print('TimeoutException for close btn..///..//')
-            # except ElementClickInterceptedException:
-            #     print('ElementClickInterceptedException---....') 
-            #     new_tractor.click()      
+
+            except ElementClickInterceptedException:
+                print('ElementClickInterceptedException+++....')
+                driver.execute_script("arguments[0].click();", new_harvester)     
 
             brand = driver.find_element(By.CSS_SELECTOR, "div.product-single-features-inner>p>a").text
             brand_list.append(brand)
@@ -154,11 +155,11 @@ if buttonText == 'Load More Tractors':
             model = driver.find_element(By.XPATH, "//li[@itemprop='itemListElement']/span[@itemprop='name']").text
             model_list.append(model)
 
-            model_name_ = driver.find_element(By.CSS_SELECTOR, 
-            "div.product-single-top>div.product-tooltip>h1").text
-            model_name.append(model_name_)
+            print('brand_list-.... ', brand_list, model_list)
 
-            print('model_list///-', model_list)
+            # model_name_ = driver.find_element(By.CSS_SELECTOR, 
+            # "div.product-single-top>div.section-heading>h1").text
+            # model_name.append(model_name_)
 
             # image_list
             tractor_images = driver.find_elements(By.CSS_SELECTOR, "div.slider div.slick-list div.slick-track div.slick-slide>img")
@@ -182,7 +183,7 @@ if buttonText == 'Load More Tractors':
             if '/' in model:
                 m= model.split('/')
                 model = m[0]+"_"+m[1]
-
+            # model='368multiland46' 
             # save image 
             imagename_list=[]
             for i in range((len(src))):
@@ -195,14 +196,14 @@ if buttonText == 'Load More Tractors':
                     urllib.request.urlretrieve(str(src[i]), dirname+img_name+'.png'.format(i))
             
             # Add background
-            files = os.listdir(dirname)
-            for file in files:
-                print('file-',file)
-                im = Image.open(os.path.join(dirname, file))
-                output_path = dirname+file 
+            # files = os.listdir(dirname)
+            # for file in files:
+            #     print('file-',file)
+            #     im = Image.open(os.path.join(dirname, file))
+            #     output_path = dirname+file 
 
-                output = remove(im,  bgcolor=(255, 255, 255, 255)) 
-                output.save(output_path, quality=95)
+            #     output = remove(im,  bgcolor=(255, 255, 255, 255)) 
+            #     output.save(output_path, quality=95)
 
             # Add Watermark
             print('dirname/', dirname)
@@ -240,7 +241,8 @@ if buttonText == 'Load More Tractors':
                         d.text(((width/2+(w*1.20)),(height/2+(height/3)+h*1.3)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
                     else:
                         print('else//..')
-                        d.text(((width/2+112),(height-h-10)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
+                        d.text(((width/2+70),(height-h-5)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
+                        # d.text(((width/2+112),(height-h-10)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
                         
                     out = Image.alpha_composite(img.convert("RGBA"), txt)
                     output_path = dirname+file
@@ -285,9 +287,9 @@ if buttonText == 'Load More Tractors':
 
                 load_more = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, "loadmorebtn")))
                 buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')
-                while buttonText == 'Load More Tractors':
+                while buttonText == 'Load More Harvesters':
                     buttonText = driver.find_element(By.ID, 'loadmorebtn').get_attribute('innerHTML')    
-                    if buttonText != 'Load More Tractors':
+                    if buttonText != 'Load More Harvesters':
                         break
                     else:  
                         load_more = WebDriverWait(driver, 3).until(EC.element_to_be_clickable((By.ID, "loadmorebtn")))
@@ -318,7 +320,7 @@ data_dict = {
 df=pd.DataFrame.from_dict(data_dict, orient="index")
 df= df.transpose()
 
-writer = pd.ExcelWriter('digitrac.xlsx', engine='xlsxwriter')
+writer = pd.ExcelWriter('harvester.xlsx', engine='xlsxwriter')
 df.to_excel(writer, sheet_name='Sheet1', index=False,startrow=1, header=False)
 workbook=writer.book
 worksheet = writer.sheets['Sheet1']

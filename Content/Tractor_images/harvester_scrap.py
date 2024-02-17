@@ -24,7 +24,7 @@ options.add_argument("--disable-popup-blocking")
 
 driver = webdriver.Chrome()
 
-driver.get('https://www.tractorjunction.com/harvester/155/vishal-435-corn-collector-combine-harvester/')
+driver.get('https://www.tractorjunction.com/harvester/144/mahindra-800-combine-harvester/')
 
 wait = WebDriverWait(driver, 15)
 try:
@@ -100,11 +100,11 @@ model_name=[]
 model = driver.find_element(By.XPATH, "//li[@itemprop='itemListElement']/span[@itemprop='name']").text
 model_list.append(model)
 
-# model_name_ = driver.find_element(By.CSS_SELECTOR, 
-# "div.product-single-top>div.product-tooltip>h1").text
-# model_name.append(model_name_)
+print('brand_list-.... ', brand_list, model_list)
 
-print('model_list///-', model_list)
+model_name_ = driver.find_element(By.CSS_SELECTOR, 
+"div.product-single-top>div.section-heading>h1").text
+model_name.append(model_name_)
 
 # image_list
 tractor_images = driver.find_elements(By.CSS_SELECTOR, "div.slider div.slick-list div.slick-track div.slick-slide>img")
@@ -128,6 +128,7 @@ print('dirname- ', dirname)
 if '/' in model:
     m= model.split('/')
     model = m[0]+"_"+m[1]
+# model='368multiland41'   
 # save image 
 imagename_list=[]
 for i in range((len(src))):
@@ -140,14 +141,14 @@ for i in range((len(src))):
         urllib.request.urlretrieve(str(src[i]), dirname+img_name+'.png'.format(i))
 
 # Add background
-files = os.listdir(dirname)
-for file in files:
-    print('file-',file)
-    im = Image.open(os.path.join(dirname, file))
-    output_path = dirname+file 
+# files = os.listdir(dirname)
+# for file in files:
+#     print('file-',file)
+#     im = Image.open(os.path.join(dirname, file))
+#     output_path = dirname+file 
 
-    output = remove(im,  bgcolor=(255, 255, 255, 255)) 
-    output.save(output_path, quality=95)
+#     output = remove(im,  bgcolor=(255, 255, 255, 255)) 
+#     output.save(output_path, quality=90)
 
 # Add Watermark
 print('dirname/', dirname)
@@ -185,7 +186,7 @@ for file in rem_bgfiles:
             d.text(((width/2+(w*1.20)),(height/2+(height/3)+h*1.3)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
         else:
             print('else//..')
-            d.text(((width/2+112),(height-h-10)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
+            d.text(((width/2+70),(height-h-5)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
         
         out = Image.alpha_composite(img.convert("RGBA"), txt)
         output_path = dirname+file
