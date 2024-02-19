@@ -6,6 +6,7 @@ use App\Imports\TractorDetailsFile;
 use App\Imports\HarvesterDetailsFile;
 use App\Imports\TyreDetailsFile;
 use App\Imports\StateDistFile;
+use App\Imports\FarmImplementFile;
 use Illuminate\Http\Request;
 
 class ImportTractorDetails extends Controller
@@ -62,5 +63,14 @@ class ImportTractorDetails extends Controller
         
         Excel::import(new StateDistFile , $file);
         return response()->json('State Dist details imported Successfully',200);
+    }
+    public function importFarmImplement(Request $request){
+        $request->validate([
+            'file'=>'required|mimes:xlsx,xls'
+        ]);
+        $file = $request->file('file');
+        
+        Excel::import(new FarmImplementFile , $file);
+        return response()->json('Farm Implement imported Successfully',200);
     }
 }

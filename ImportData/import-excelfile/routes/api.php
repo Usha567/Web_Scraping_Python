@@ -25,3 +25,4 @@ Route::post('/import-tractor', [ImportTractorDetails::class, 'importTractor']);
 Route::post('/import-harvester', [ImportTractorDetails::class, 'importHarvester']);
 Route::post('/import-tyre', [ImportTractorDetails::class, 'importTyre']);
 Route::post('/import-state-dist', [ImportTractorDetails::class, 'importStateDist']);
+Route::post('/import-farm-implement',[ImportTractorDetails::class, 'importFarmImplement']);
