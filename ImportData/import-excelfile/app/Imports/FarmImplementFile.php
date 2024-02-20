@@ -40,29 +40,32 @@ class FarmImplementFile implements ToModel
         // echo 'subcatid-- '.$sub_cat_id;
 
         $products = Product::where('model', trim($row[1]))->first();
+        // // echo 'here--'.$products->id;
         if(!is_null($products)){
-            // //'implement_category_id'=>$row[2]!=''?Implement_category::where('category_name',trim($row[2]))->first()->id:NULL,
-            //$products->implement_sub_category_id=$row[3]!=''?Implement_sub_category::where('sub_category_name',trim($row[3]))->first()->id:NULL;
+            echo 'here--'.$products->id;
+        //     // //'implement_category_id'=>$row[2]!=''?Implement_category::where('category_name',trim($row[2]))->first()->id:NULL,
+        //     //$products->implement_sub_category_id=$row[3]!=''?Implement_sub_category::where('sub_category_name',trim($row[3]))->first()->id:NULL;
             $products->implement_sub_category_id=$row[3]!=''?Implement_sub_category::where('sub_category_name',trim($row[3]))->first()->id:NULL;
-            $products->CUSTOM_1=$row[16];
-            $products->CUSTOM_2=$row[39];
-            $products->CUSTOM_3=$row[13];
-            $products->CUSTOM_4=$row[46];
-            $products->CUSTOM_5=$row[14];
-            $products->CUSTOM_6=$row[18];
-            $products->CUSTOM_7=$row[19];
-            $products->CUSTOM_8=$row[20];
-            $products->CUSTOM_9=$row[17];
-            $products->CUSTOM_10=$row[44];
-            $products->CUSTOM_11=$row[25];
-            $products->CUSTOM_12=$row[27];
-            $products->CUSTOM_13=$row[28];
-            $products->CUSTOM_14=$row[33];
-            $products->CUSTOM_15=$row[21];
-            $products->CUSTOM_16=$row[36];
-            $products->CUSTOM_17=$row[37];
-            // $products->CUSTOM_18=$row[37];
-            // $products->CUSTOM_19=$row[31];
+            $products->CUSTOM_1=$row[61];
+            $products->CUSTOM_2=$row[64];
+            $products->CUSTOM_3=$row[63];
+            $products->CUSTOM_4=$row[65];
+            $products->CUSTOM_5=$row[66];
+            $products->CUSTOM_6=$row[67];
+            $products->CUSTOM_7=$row[10];
+            $products->CUSTOM_8=$row[68];
+            $products->CUSTOM_9=$row[69];
+            $products->CUSTOM_10=$row[70];
+            $products->CUSTOM_11=$row[71];
+
+            // $products->CUSTOM_12=$row[31];
+            // $products->CUSTOM_13=$row[51];
+            // $products->CUSTOM_14=$row[52];
+            // $products->CUSTOM_15=$row[14];
+            // $products->CUSTOM_16=$row[53];
+            // $products->CUSTOM_17=$row[31];
+            // $products->CUSTOM_18=$row[31];
+            // $products->CUSTOM_19=$row[27];
             // $products->CUSTOM_20=$row[32];
             // $products->CUSTOM_21=$row[33];
             // $products->CUSTOM_22=$row[34];

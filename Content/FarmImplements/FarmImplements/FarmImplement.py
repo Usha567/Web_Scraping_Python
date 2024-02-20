@@ -76,7 +76,7 @@ image_type_name=[]
 #             print('clicked on load')  
 #     print('click3',count)
 
-for i in range(1,4):
+for i in range(8,10):
     print('looping start...i-', i)
 
     try:
@@ -173,7 +173,7 @@ for i in range(1,4):
                 d.text(((width/2+(w*1.20)),(height/2+(height/3)+h*1.3)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
             else:
                 print('else//..')
-                d.text(((width/2+70),(height-h-12)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
+                d.text(((width/2+50),(height-h-12)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
                 # d.text(((width/2+112),(height-h-10)), "Bharatagrimart",font=font, fill=(0, 0, 0, 150))
                 
             out = Image.alpha_composite(img.convert("RGBA"), txt)
